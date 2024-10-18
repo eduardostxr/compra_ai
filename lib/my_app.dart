@@ -1,4 +1,4 @@
-import 'package:compra/home/home_page.dart';
+import 'package:compra/ui/home/home_page.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {

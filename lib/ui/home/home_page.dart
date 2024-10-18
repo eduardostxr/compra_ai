@@ -1,7 +1,7 @@
 import 'package:compra/util/colors_config.dart';
-import 'package:compra/home/components/general_button.dart';
-import 'package:compra/home/components/list_profile_group.dart';
-import 'package:compra/home/components/list_profile_group_header.dart';
+import 'package:compra/ui/home/components/general_home_btn.dart';
+import 'package:compra/ui/home/components/list_profile_group.dart';
+import 'package:compra/ui/home/components/list_profile_group_header.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -46,19 +46,19 @@ class _MyHomePageState extends State<MyHomePage> {
             profiles: profiles,
           ),
           const SizedBox(height: 8),
-          GeneralButton(
+          GeneralHomeBtn(
             icon: Icons.list_outlined,
             label: "Gerenciar Lista",
             onPressed: () {},
           ),
           const SizedBox(height: 8),
-          GeneralButton(
+          GeneralHomeBtn(
             icon: Icons.camera_alt_outlined,
             label: "Nota Fiscal",
             onPressed: () {},
           ),
           const SizedBox(height: 32),
-          GeneralButton(
+          GeneralHomeBtn(
             icon: Icons.add,
             label: "Adicionar Item",
             onPressed: () {},

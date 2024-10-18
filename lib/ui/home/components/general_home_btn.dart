@@ -1,16 +1,19 @@
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
-class GeneralButton extends StatelessWidget {
-  const GeneralButton(
+class GeneralHomeBtn extends StatelessWidget { // StatelessWidget ou StatefulWidget
+  const GeneralHomeBtn(
       {super.key,
+      // required this.color,
       required this.icon,
       required this.label,
       required this.onPressed});
 
+  // final Colors color;
   final IconData icon;
   final String label;
   final VoidCallback onPressed;
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class GeneralButton extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(icon),
             const SizedBox(width: 16),
