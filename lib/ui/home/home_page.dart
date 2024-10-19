@@ -1,4 +1,3 @@
-import 'package:compra/inicial/components/default_button.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
@@ -64,7 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
             label: "Adicionar Item",
             onPressed: () {},
           ),
-         // DefaultButton()
         ],
       ),
     );
