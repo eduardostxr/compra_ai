@@ -2,7 +2,7 @@ import 'package:compra/ui/home/home_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
-import 'components/default_button.dart';
+import '../_common/default_button.dart';
 
 class StartingPage extends StatelessWidget {
   const StartingPage({super.key});
