@@ -1,16 +1,12 @@
 import 'package:compra/Util/colors_config.dart';
 import 'package:flutter/material.dart';
 
-class CadastroHeader extends StatelessWidget {
-  const CadastroHeader({
-    super.key,
-    required this.titulo,
-    required this.subtitulo,
-  
-  });
+class GenericPageHeader extends StatelessWidget {
+  const GenericPageHeader(
+      {super.key, required this.title, required this.subtitle});
 
-  final String titulo;
-  final String subtitulo;
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +14,17 @@ class CadastroHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          titulo,
-          style: TextStyle(
+          title,
+          style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: AppColors.darkGray),
         ),
+        const SizedBox(height: 8),
         Text(
-          subtitulo,
+          subtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.darkGray),
+          style: const TextStyle(color: AppColors.darkGray),
         )
       ],
     );

@@ -1,4 +1,5 @@
-import 'package:compra/ui/home/home_page.dart';
+import 'package:compra/ui/register/register_page.dart';
+import 'package:compra/ui/login/login_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
@@ -19,14 +20,21 @@ class StartingPage extends StatelessWidget {
           Image.asset('lib/assets/images/logo.png'),
           const SizedBox(height: 100),
           DefaultButton(
-              color: AppColors.orange, label: "Cadastrar-se", onPressed: () {}),
+              color: AppColors.orange, label: "Cadastrar-se", onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CadastroPage(),
+                  ),
+                );
+              },),
           DefaultButton(
             color: AppColors.darkGreen,
             label: "Entrar",
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const MyHomePage(title: "Olá, Mateus")),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
           )

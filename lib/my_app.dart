@@ -1,5 +1,4 @@
-import 'package:compra/ui/cadastro/cadastro_page.dart';
-import 'package:compra/ui/login/login_page.dart';
+import 'package:compra/ui/start/starting_page.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -9,7 +8,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Compra.AI',
-      home: CadastroPage(),
+      home: StartingPage(),
     );
   }
 }

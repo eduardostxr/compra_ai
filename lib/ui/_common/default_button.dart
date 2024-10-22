@@ -10,7 +10,7 @@ class DefaultButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       height: 40,
       width: double.infinity,
       child: FilledButton(
