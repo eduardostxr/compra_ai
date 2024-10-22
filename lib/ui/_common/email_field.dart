@@ -36,10 +36,10 @@ class _EmailFieldState extends State<EmailField> {
                 hintText: widget.hint,
                 hintStyle: const TextStyle(color: AppColors.mediumGray),
                 enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.darkGreen, width: 2),
+                  borderSide: BorderSide(color: AppColors.orange, width: 2),
                 ),
                 focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.orange, width: 2),
+                  borderSide: BorderSide(color: AppColors.darkGreen, width: 2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 5, horizontal: 10),
