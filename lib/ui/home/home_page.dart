@@ -1,4 +1,4 @@
-import 'package:compra/ui/home/components/home_bottom_sheet.dart';
+import 'package:compra/ui/home/components/account_bottom_sheet.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
@@ -24,7 +24,8 @@ class _MyHomePageState extends State<MyHomePage> {
     {"id": "6", "title": "Lista 6", "emoji": "🍕"},
   ];
 
-    void _showBottomSheet() {
+  // Updated to accept a widget as a parameter
+  void _showAccountBottomSheet(Widget bottomSheetWidget) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.offWhite,
@@ -32,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (BuildContext context) {
-        return HomeBottomSheet(profiles: profiles);
+        return bottomSheetWidget; // Use the passed widget
       },
     );
   }
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: AppColors.white),
-            onPressed: _showBottomSheet,
+            onPressed: () => _showAccountBottomSheet(const AccountBottomSheet()),
           ),
         ],
       ),

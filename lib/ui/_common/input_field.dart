@@ -30,7 +30,7 @@ class _InputFieldState extends State<InputField> {
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 50,
             child: TextField(
               decoration: InputDecoration(
                 hintText: widget.hint,

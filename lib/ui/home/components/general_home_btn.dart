@@ -1,15 +1,13 @@
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
-class GeneralHomeBtn extends StatelessWidget { // StatelessWidget ou StatefulWidget
+class GeneralHomeBtn extends StatelessWidget {
   const GeneralHomeBtn(
       {super.key,
-      // required this.color,
       required this.icon,
       required this.label,
       required this.onPressed});
 
-  // final Colors color;
   final IconData icon;
   final String label;
   final VoidCallback onPressed;

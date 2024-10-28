@@ -17,14 +17,14 @@ class GenericPageHeader extends StatelessWidget {
           title,
           style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 18,
               color: AppColors.darkGray),
         ),
         const SizedBox(height: 8),
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(color: AppColors.darkGray),
+          style: const TextStyle(color: AppColors.darkGray, fontSize: 16),
         )
       ],
     );

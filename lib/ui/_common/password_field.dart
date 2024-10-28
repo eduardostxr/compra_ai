@@ -32,7 +32,7 @@ class _PasswordFieldState extends State<PasswordField> {
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 50,
             child: TextField(
               obscureText: _obscureText,
               decoration: InputDecoration(

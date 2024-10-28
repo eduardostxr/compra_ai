@@ -1,5 +1,6 @@
 import 'package:compra/Util/colors_config.dart';
 import 'package:compra/ui/_common/dashed_border.dart';
+import 'package:compra/ui/new_list/new_list_page.dart';
 import 'package:flutter/material.dart';
 
 class AddListButton extends StatelessWidget {
@@ -17,8 +18,12 @@ class AddListButton extends StatelessWidget {
               color: AppColors.lightPeach,
             ),
             child: InkWell(
-              onTap: () {
-              },
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewListPage(),
+                ),
+              ),
               splashColor: AppColors.orange.withOpacity(0.2),
               highlightColor: AppColors.orange.withOpacity(0.1),
               borderRadius: BorderRadius.circular(30),
