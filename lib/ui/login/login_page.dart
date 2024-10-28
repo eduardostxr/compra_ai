@@ -22,7 +22,7 @@ class LoginPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 10),
             const GenericPageHeader(
                 title: "Acesse agora",
                 subtitle:
@@ -44,9 +44,20 @@ class LoginPage extends StatelessWidget {
                     builder: (context) => const MyHomePage(title: "Olá, Usuário",),
                   ),
                   (Route<dynamic> route) => false,
+                  
                 );
               },
-            )
+            
+            ),
+              const SizedBox(height: 16),
+              const InputField(hint: "Entrar com Facebook", label: ""),
+              const SizedBox(height: 8,),
+              const InputField(hint: "Entrar com Google", label: ""),
+
+              const SizedBox(height: 2),
+              const GenericPageHeader(
+                title: "", 
+                subtitle: "Não tem cadastro? Começar")
           ],
         ),
       ),
