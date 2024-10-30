@@ -14,20 +14,24 @@ class StartingPage extends StatelessWidget {
       backgroundColor: AppColors.offWhite,
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 130),
           Image.asset('lib/assets/images/logo.png'),
           const SizedBox(height: 100),
           DefaultButton(
-              color: AppColors.orange, label: "Cadastrar-se", onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CadastroPage(),
-                  ),
-                );
-              },),
+            color: AppColors.orange,
+            label: "Cadastrar-se",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CadastroPage(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 26),
           DefaultButton(
             color: AppColors.darkGreen,
             label: "Entrar",

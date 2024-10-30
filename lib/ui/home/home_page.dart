@@ -24,7 +24,6 @@ class _MyHomePageState extends State<MyHomePage> {
     {"id": "6", "title": "Lista 6", "emoji": "🍕"},
   ];
 
-  // Updated to accept a widget as a parameter
   void _showAccountBottomSheet(Widget bottomSheetWidget) {
     showModalBottomSheet(
       context: context,
@@ -33,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (BuildContext context) {
-        return bottomSheetWidget; // Use the passed widget
+        return bottomSheetWidget;
       },
     );
   }

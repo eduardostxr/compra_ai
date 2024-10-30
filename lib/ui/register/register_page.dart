@@ -22,12 +22,14 @@ class CadastroPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             const Align(
               alignment: Alignment.center,
               child: GenericPageHeader(title: "Vamos Começar", subtitle: "Digite as informações solicitadas nos \n campos abaixo para se cadastrar")
             ),
             const SizedBox(height: 40),
+            const InputField(hint: "Digite seu nome", label: "Nome"),
+            const SizedBox(height: 8),
             const InputField(hint: "Digite seu email", label: "Email"),
             const SizedBox(height: 8),
             const PasswordField(hint: "Digite sua senha", label: "Senha"),

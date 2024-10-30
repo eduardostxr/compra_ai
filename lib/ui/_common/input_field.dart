@@ -37,9 +37,11 @@ class _InputFieldState extends State<InputField> {
                 hintStyle: const TextStyle(color: AppColors.mediumGray),
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: AppColors.darkGreen, width: 2),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: AppColors.orange, width: 2),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 5, horizontal: 10),

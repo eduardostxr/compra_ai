@@ -4,7 +4,9 @@ import 'package:compra/ui/_common/input_field.dart';
 import 'package:compra/ui/_common/generic_page_header.dart';
 import 'package:compra/ui/_common/password_field.dart';
 import 'package:compra/ui/home/home_page.dart';
+import 'package:compra/ui/login/components/divider_with_text.dart';
 import 'package:compra/ui/login/components/reset_password_btn.dart';
+import 'package:compra/ui/login/components/social_btn.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -41,23 +43,19 @@ class LoginPage extends StatelessWidget {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyHomePage(title: "Olá, Usuário",),
+                    builder: (context) => const MyHomePage(
+                      title: "Olá, Usuário",
+                    ),
                   ),
                   (Route<dynamic> route) => false,
-                  
                 );
               },
-            
             ),
-              const SizedBox(height: 16),
-              const InputField(hint: "Entrar com Facebook", label: ""),
-              const SizedBox(height: 8,),
-              const InputField(hint: "Entrar com Google", label: ""),
-
-              const SizedBox(height: 2),
-              const GenericPageHeader(
-                title: "", 
-                subtitle: "Não tem cadastro? Começar")
+            const DividerWithText(text: "ou"),
+            const SizedBox(height: 16),
+            const SocialBtn(text: "Entrar com o Facebook", path: "lib/assets/images/face_icon.png"),
+            const SizedBox(height: 16),
+            const SocialBtn(text: "Entrar com o Google", path: "lib/assets/images/google_icon.png"),
           ],
         ),
       ),
