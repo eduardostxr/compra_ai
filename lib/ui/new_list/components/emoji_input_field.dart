@@ -5,17 +5,19 @@ import 'package:compra/util/colors_config.dart';
 class EmojiInputField extends StatelessWidget {
   final String label;
   final String hint;
+  final TextEditingController controller; // Adiciona o controlador como parâmetro
+  final VoidCallback onEmojiPressed;
 
   const EmojiInputField({
     super.key,
     required this.hint,
     required this.label,
+    required this.controller, // Define o controlador como required
+    required this.onEmojiPressed, // Callback para o botão de emoji
   });
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -32,7 +34,7 @@ class EmojiInputField extends StatelessWidget {
           SizedBox(
             height: 40,
             child: TextField(
-              controller: controller,
+              controller: controller, // Usa o controlador passado
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: const TextStyle(color: AppColors.mediumGray),
@@ -45,18 +47,7 @@ class EmojiInputField extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.emoji_emotions_outlined),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return EmojiPicker(
-                          onEmojiSelected: (category, emoji) {
-                            controller.text += emoji.emoji;
-                          },
-                        );
-                      },
-                    );
-                  },
+                  onPressed: onEmojiPressed, // Chama a função para abrir o emoji picker
                 ),
               ),
               keyboardType: TextInputType.multiline,
