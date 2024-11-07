@@ -1,14 +1,14 @@
+import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/ui/home/components/account_bottom_sheet.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
 import 'package:compra/ui/home/components/list_profile_group_header.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -39,13 +39,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authManager =
+        Provider.of<AuthManager>(context);
+    String userName = authManager.userId.toString();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.orange,
         title: Row(
           children: [
             Text(
-              widget.title,
+              "Olá ${userName.split(" ").first}",
               style: const TextStyle(color: AppColors.white),
             ),
           ],
@@ -53,7 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: AppColors.white),
-            onPressed: () => _showAccountBottomSheet(const AccountBottomSheet()),
+            onPressed: () =>
+                _showAccountBottomSheet(const AccountBottomSheet()),
           ),
         ],
       ),

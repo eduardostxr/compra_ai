@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class InputField extends StatefulWidget {
   final String label;
   final String hint;
+  final TextEditingController controller;
 
-  const InputField({super.key, required this.hint, required this.label});
+  const InputField({
+    super.key,
+    required this.hint,
+    required this.label,
+    required this.controller,
+  });
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -32,6 +38,7 @@ class _InputFieldState extends State<InputField> {
           SizedBox(
             height: 50,
             child: TextField(
+              controller: widget.controller,
               decoration: InputDecoration(
                 hintText: widget.hint,
                 hintStyle: const TextStyle(color: AppColors.mediumGray),

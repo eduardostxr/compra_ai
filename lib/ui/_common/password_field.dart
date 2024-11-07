@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class PasswordField extends StatefulWidget {
   final String label;
   final String hint;
+  final TextEditingController controller;
 
-  const PasswordField({super.key, required this.hint, required this.label});
+  const PasswordField({
+    super.key,
+    required this.hint,
+    required this.label,
+    required this.controller, 
+  });
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -34,6 +40,7 @@ class _PasswordFieldState extends State<PasswordField> {
           SizedBox(
             height: 50,
             child: TextField(
+              controller: widget.controller,
               obscureText: _obscureText,
               decoration: InputDecoration(
                 hintText: widget.hint,

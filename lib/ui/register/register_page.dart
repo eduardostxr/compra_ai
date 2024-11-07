@@ -6,8 +6,32 @@ import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:flutter/material.dart';
 
-class CadastroPage extends StatelessWidget {
+class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
+
+  @override
+  CadastroPageState createState() => CadastroPageState();
+}
+
+class CadastroPageState extends State<CadastroPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _pixKeyController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _phoneController.dispose();
+    _pixKeyController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +49,48 @@ class CadastroPage extends StatelessWidget {
             const SizedBox(height: 16),
             const Align(
               alignment: Alignment.center,
-              child: GenericPageHeader(title: "Vamos Começar", subtitle: "Digite as informações solicitadas nos \n campos abaixo para se cadastrar")
+              child: GenericPageHeader(
+                title: "Vamos Começar",
+                subtitle:
+                    "Digite as informações solicitadas nos \n campos abaixo para se cadastrar",
+              ),
             ),
             const SizedBox(height: 40),
-            const InputField(hint: "Digite seu nome", label: "Nome"),
+            InputField(
+              hint: "Digite seu nome",
+              label: "Nome",
+              controller: _nameController, 
+            ),
             const SizedBox(height: 8),
-            const InputField(hint: "Digite seu email", label: "Email"),
+            InputField(
+              hint: "Digite seu email",
+              label: "Email",
+              controller: _emailController, 
+            ),
             const SizedBox(height: 8),
-            const PasswordField(hint: "Digite sua senha", label: "Senha"),
+            PasswordField(
+              hint: "Digite sua senha",
+              label: "Senha",
+              controller: _passwordController, 
+            ),
             const SizedBox(height: 8),
-            const PasswordField(hint: "Repita sua senha", label: "Confirmar senha"),
+            PasswordField(
+              hint: "Repita sua senha",
+              label: "Confirmar senha",
+              controller: _confirmPasswordController, 
+            ),
             const SizedBox(height: 40),
-            const InputField(hint: "(99) 99999-9999", label: "Telefone"),
+            InputField(
+              hint: "(99) 99999-9999",
+              label: "Telefone",
+              controller: _phoneController, 
+            ),
             const SizedBox(height: 40),
-            const InputField(hint: "Digite sua chave pix", label: "Chave Pix"),
+            InputField(
+              hint: "Digite sua chave pix",
+              label: "Chave Pix",
+              controller: _pixKeyController,
+            ),
             const SizedBox(height: 40),
             DefaultButton(
               color: AppColors.darkGreen,

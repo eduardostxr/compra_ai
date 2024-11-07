@@ -1,19 +1,18 @@
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:compra/util/colors_config.dart';
 
 class EmojiInputField extends StatelessWidget {
   final String label;
   final String hint;
-  final TextEditingController controller; // Adiciona o controlador como parâmetro
+  final TextEditingController controller;
   final VoidCallback onEmojiPressed;
 
   const EmojiInputField({
     super.key,
     required this.hint,
     required this.label,
-    required this.controller, // Define o controlador como required
-    required this.onEmojiPressed, // Callback para o botão de emoji
+    required this.controller,
+    required this.onEmojiPressed,
   });
 
   @override
@@ -34,7 +33,7 @@ class EmojiInputField extends StatelessWidget {
           SizedBox(
             height: 40,
             child: TextField(
-              controller: controller, // Usa o controlador passado
+              controller: controller,
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: const TextStyle(color: AppColors.mediumGray),
@@ -47,7 +46,7 @@ class EmojiInputField extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.emoji_emotions_outlined),
-                  onPressed: onEmojiPressed, // Chama a função para abrir o emoji picker
+                  onPressed: onEmojiPressed,
                 ),
               ),
               keyboardType: TextInputType.multiline,
