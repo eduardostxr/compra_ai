@@ -1,6 +1,6 @@
-import "package:compra/service/queries/auth_service.dart";
-import "package:flutter/material.dart";
-import "../models/response_model.dart";
+import 'package:flutter/material.dart';
+import '../service/queries/auth_service.dart';
+import '../models/response_model.dart';
 
 class AuthManager with ChangeNotifier {
   String? _accessToken;
@@ -20,19 +20,37 @@ class AuthManager with ChangeNotifier {
   }
 
   Future<ResponseModel?> login(BuildContext context, String email, String password) async {
-    ResponseModel? response = await AuthService.login(email: email, password: password);
+    ResponseModel? response = await AuthService.login(
+      email: email,
+      password: password,
+    );
+
     if (response != null && response.statusCode == 200) {
       setAccessToken(response.value["accessToken"]);
       setRefreshToken(response.value["refreshToken"]);
+      debugPrint("Login successful. Tokens set.");
+    } else {
+      debugPrint("Login failed. Message: ${response?.message}");
     }
-    debugPrint("Access Token: $_accessToken");
-    debugPrint("Refresh Token: $_refreshToken");
 
     return response;
   }
 
   Future<ResponseModel?> signUp(BuildContext context, String name, String email, String password, String telephone, String pixKey) async {
-    ResponseModel? response = await AuthService.signUp(email: email, name: name, password: password, telephone: telephone, pixKey: pixKey);
+    ResponseModel? response = await AuthService.signUp(
+      name: name,
+      email: email,
+      password: password,
+      telephone: telephone,
+      pixKey: pixKey,
+    );
+
+    if (response != null && response.statusCode == 201) {
+      debugPrint("Sign-up successful. Welcome!");
+    } else {
+      debugPrint("Sign-up failed. Message: ${response?.message}");
+    }
+
     return response;
   }
 }

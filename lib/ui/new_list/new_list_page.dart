@@ -1,4 +1,6 @@
+import 'package:compra/ui/_common/default_button.dart';
 import 'package:compra/ui/new_list/components/emoji_input_field.dart';
+import 'package:compra/util/colors_config.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ class NewListPage extends StatefulWidget {
 
 class _NewListPageState extends State<NewListPage> {
   final TextEditingController controller = TextEditingController();
+  final GlobalKey<EmojiInputFieldState> emojiFieldKey = GlobalKey();
 
   void _showEmojiPicker() {
     showModalBottomSheet(
@@ -18,9 +21,8 @@ class _NewListPageState extends State<NewListPage> {
       builder: (context) {
         return EmojiPicker(
           onEmojiSelected: (category, emoji) {
-            setState(() {
-              controller.text += emoji.emoji;
-            });
+            emojiFieldKey.currentState?.updateEmoji(emoji.emoji);
+            Navigator.pop(context);
           },
         );
       },
@@ -35,11 +37,21 @@ class _NewListPageState extends State<NewListPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: EmojiInputField(
-          hint: "Ex: Amigos 123",
-          label: "Nome",
-          controller: controller,
-          onEmojiPressed: _showEmojiPicker,
+        child: Column(
+          children: [
+            EmojiInputField(
+              key: emojiFieldKey,
+              hint: "Ex: Amigos 123",
+              label: "Nome",
+              controller: controller,
+              onEmojiPressed: _showEmojiPicker,
+            ),
+            const SizedBox(height: 32),
+            DefaultButton(
+                color: AppColors.darkGreen,
+                label: "Criar Lista",
+                onPressed: () {}),
+          ],
         ),
       ),
     );

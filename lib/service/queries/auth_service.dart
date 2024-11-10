@@ -1,7 +1,7 @@
-import "package:compra/models/response_model.dart";
-import "package:flutter/material.dart";
-import "dart:convert";
-import "../web_service.dart";
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import '../../models/response_model.dart';
+import '../web_service.dart';
 
 class AuthService {
   static Future<ResponseModel?> login({
@@ -12,23 +12,29 @@ class AuthService {
 
     try {
       final response = await WebService.post(path, {
-        'email': email,
-        'password': password,
+        'email': email.trim(),
+        'password': password.trim(),
       });
 
+      debugPrint('Login response status: ${response.statusCode}');
+      debugPrint('Login response body: ${response.body}');
+
       if (response.statusCode == 200) {
-        ResponseModel responseModel = ResponseModel.fromJson(response.statusCode, "Login bem-sucedido!", jsonDecode(response.body));
-        debugPrint('Login successful: ${response.statusCode}');
-        return responseModel;
+        return ResponseModel.fromJson(
+          response.statusCode,
+          "Login bem-sucedido!",
+          jsonDecode(response.body),
+        );
       } else {
-        ResponseModel responseModel = ResponseModel.fromJson(response.statusCode, "Falha ao fazer login", jsonDecode(response.body));
-        debugPrint('Failed to login: ${response.statusCode}');
-        return responseModel;
+        return ResponseModel.fromJson(
+          response.statusCode,
+          "Falha ao fazer login",
+          jsonDecode(response.body),
+        );
       }
     } catch (e) {
-      ResponseModel responseModel = ResponseModel.fromJson(500, "Verifique sua conexão com a internet", null);
-      debugPrint('Error during login: $e');
-      return responseModel;
+      debugPrint('Login error: $e');
+      return ResponseModel.fromJson(500, "Erro de conexão", null);
     }
   }
 
@@ -43,26 +49,32 @@ class AuthService {
 
     try {
       final response = await WebService.post(path, {
-        "name": name,
-        "email": email,
-        "password": password,
+        "name": name.trim(),
+        "email": email.trim(),
+        "password": password.trim(),
         "pixKey": pixKey,
-        "telephone": telephone,
+        "telephone": telephone.trim(),
       });
 
+      debugPrint('SignUp response status: ${response.statusCode}');
+      debugPrint('SignUp response body: ${response.body}');
+
       if (response.statusCode == 201) {
-        ResponseModel responseModel = ResponseModel.fromJson(response.statusCode, "Bem-vindo!", jsonDecode(response.body));
-        debugPrint('Sign up successful: ${response.statusCode}');
-        return responseModel;
+        return ResponseModel.fromJson(
+          response.statusCode,
+          "Bem-vindo!",
+          jsonDecode(response.body),
+        );
       } else {
-        ResponseModel responseModel = ResponseModel.fromJson(response.statusCode, "Falha ao criar conta", jsonDecode(response.body));
-        debugPrint('Failed to sign up: ${response.statusCode}');
-        return responseModel;
+        return ResponseModel.fromJson(
+          response.statusCode,
+          "Falha ao criar conta",
+          jsonDecode(response.body),
+        );
       }
     } catch (e) {
-      ResponseModel responseModel = ResponseModel.fromJson(500, "Verifique sua conexão com a internet", null);
-      debugPrint('Error during sign up: $e');
-      return responseModel;
+      debugPrint('SignUp error: $e');
+      return ResponseModel.fromJson(500, "Erro de conexão", null);
     }
   }
 }

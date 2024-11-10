@@ -8,11 +8,10 @@ class WebService {
   WebService._internal();
 
   static final http.Client client = http.Client();
-  static String baseUrl = "192.168.8.76:3001";
-  // static String baseUrl = "10.1.110.86:3001";
+  static String baseUrl = "api.compraai.tech";
 
   static Uri _buildUri(String path) {
-    return Uri.http(baseUrl, path);
+    return Uri.https(baseUrl, path);
   }
 
   static Future<http.Response> get(String path, String? token) async {

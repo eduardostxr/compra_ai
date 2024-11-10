@@ -26,14 +26,17 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> _login() async {
-    if (!mounted) return;
-
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
+    // String email = emailController.text.trim();
+    // String password = passwordController.text.trim();
+    String email =  "eduardo@gmail.com";
+    String password =  "123456";
 
     ResponseModel? response =
         await Provider.of<AuthManager>(context, listen: false)
             .login(context, email, password);
+
+    if (!mounted) return;
+
     if (response != null && response.statusCode == 200) {
       SnackBarService.showSuccess("Login realizado com sucesso!");
       Navigator.pushReplacement(
