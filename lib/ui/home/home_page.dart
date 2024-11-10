@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final authManager =
         Provider.of<AuthManager>(context);
-    String userName = authManager.userId.toString();
+    String userName = authManager.accessToken.toString();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.orange,

@@ -1,3 +1,5 @@
+import 'package:compra/manager/auth_manager.dart';
+import 'package:compra/models/response_model.dart';
 import 'package:compra/ui/_common/generic_page_header.dart';
 import 'package:compra/ui/_common/input_field.dart';
 import 'package:compra/ui/_common/password_field.dart';
@@ -5,6 +7,8 @@ import 'package:compra/ui/login/login_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:flutter/material.dart';
+
+import '../_common/snackbar_service.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
@@ -33,6 +37,52 @@ class CadastroPageState extends State<CadastroPage> {
     super.dispose();
   }
 
+  Future<void> handleSignUp(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+    try {
+      AuthManager authManager = AuthManager();
+      ResponseModel? response = await authManager.signUp(
+        context,
+        _nameController.text,
+        _emailController.text,
+        _passwordController.text,
+        _phoneController.text,
+        _pixKeyController.text,
+      );
+
+      if (context.mounted) {
+        Navigator.pop(context);
+
+        if (response != null && response.statusCode == 201) {
+          SnackBarService.showSuccess(response.message);
+          await Future.delayed(const Duration(seconds: 2));
+          if (context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginPage(),
+              ),
+            );
+          }
+        } else {
+          SnackBarService.showError(response?.message ?? "Erro desconhecido");
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        SnackBarService.showError("Erro inesperado: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,31 +109,31 @@ class CadastroPageState extends State<CadastroPage> {
             InputField(
               hint: "Digite seu nome",
               label: "Nome",
-              controller: _nameController, 
+              controller: _nameController,
             ),
             const SizedBox(height: 8),
             InputField(
               hint: "Digite seu email",
               label: "Email",
-              controller: _emailController, 
+              controller: _emailController,
             ),
             const SizedBox(height: 8),
             PasswordField(
               hint: "Digite sua senha",
               label: "Senha",
-              controller: _passwordController, 
+              controller: _passwordController,
             ),
             const SizedBox(height: 8),
             PasswordField(
               hint: "Repita sua senha",
               label: "Confirmar senha",
-              controller: _confirmPasswordController, 
+              controller: _confirmPasswordController,
             ),
             const SizedBox(height: 40),
             InputField(
               hint: "(99) 99999-9999",
               label: "Telefone",
-              controller: _phoneController, 
+              controller: _phoneController,
             ),
             const SizedBox(height: 40),
             InputField(
@@ -95,13 +145,8 @@ class CadastroPageState extends State<CadastroPage> {
             DefaultButton(
               color: AppColors.darkGreen,
               label: "Criar Conta",
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                );
+              onPressed: () async {
+                await handleSignUp(context);
               },
             ),
             const SizedBox(height: 30),

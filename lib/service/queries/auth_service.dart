@@ -33,8 +33,8 @@ class AuthService {
   }
 
   static Future<ResponseModel?> signUp({
-    required String email,
     required String name,
+    required String email,
     required String password,
     required String telephone,
     String? pixKey,
@@ -43,11 +43,11 @@ class AuthService {
 
     try {
       final response = await WebService.post(path, {
-        'email': email,
-        'name': name,
-        'password': password,
-        'pixKey': pixKey,
-        'telephone': telephone,
+        "name": name,
+        "email": email,
+        "password": password,
+        "pixKey": pixKey,
+        "telephone": telephone,
       });
 
       if (response.statusCode == 201) {

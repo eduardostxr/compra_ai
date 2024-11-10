@@ -8,9 +8,8 @@ class WebService {
   WebService._internal();
 
   static final http.Client client = http.Client();
-  static String baseUrl = "10.1.110.15:3001";
+  static String baseUrl = "192.168.8.76:3001";
   // static String baseUrl = "10.1.110.86:3001";
-
 
   static Uri _buildUri(String path) {
     return Uri.http(baseUrl, path);
@@ -32,7 +31,8 @@ class WebService {
     }
   }
 
-  static Future<http.Response> post(String path, dynamic body, [String? token]) async {
+  static Future<http.Response> post(String path, dynamic body,
+      [String? token]) async {
     try {
       final response = await client.post(
         _buildUri(path),
@@ -42,6 +42,7 @@ class WebService {
         },
         body: jsonEncode(body),
       );
+      debugPrint("body: $body");
       return response;
     } catch (e) {
       debugPrint("Failed to POST $path: $e");
@@ -49,7 +50,8 @@ class WebService {
     }
   }
 
-  static Future<http.Response> put(String path, Map<String, dynamic>? body, [String? token]) async {
+  static Future<http.Response> put(String path, Map<String, dynamic>? body,
+      [String? token]) async {
     try {
       final response = await client.put(
         _buildUri(path),
@@ -66,7 +68,8 @@ class WebService {
     }
   }
 
-  static Future<http.Response> patch(String path, dynamic body, [String? token]) async {
+  static Future<http.Response> patch(String path, dynamic body,
+      [String? token]) async {
     try {
       final response = await client.patch(
         _buildUri(path),

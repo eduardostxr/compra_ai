@@ -12,6 +12,8 @@ import 'package:compra/ui/login/components/social_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../ui/_common/snackbar_service.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -26,23 +28,20 @@ class LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     if (!mounted) return;
 
-    String email = emailController.text;
-    String password = passwordController.text;
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
 
     ResponseModel? response =
         await Provider.of<AuthManager>(context, listen: false)
             .login(context, email, password);
-    if (mounted) {
-      if (response != null && response.statusCode == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login falhou!")),
-        );
-      }
+    if (response != null && response.statusCode == 200) {
+      SnackBarService.showSuccess("Login realizado com sucesso!");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+      );
+    } else {
+      SnackBarService.showError("Login falhou. Verifique suas credenciais.");
     }
   }
 
