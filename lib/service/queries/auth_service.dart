@@ -56,8 +56,8 @@ class AuthService {
         "telephone": telephone.trim(),
       });
 
-      debugPrint('SignUp response status: ${response.statusCode}');
-      debugPrint('SignUp response body: ${response.body}');
+      // debugPrint('SignUp response status: ${response.statusCode}');
+      // debugPrint('SignUp response body: ${response.body}');
 
       if (response.statusCode == 201) {
         return ResponseModel.fromJson(

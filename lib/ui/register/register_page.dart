@@ -78,7 +78,7 @@ class CadastroPageState extends State<CadastroPage> {
     } catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        SnackBarService.showError("Erro inesperado: $e");
+        SnackBarService.showError("Erro inesperado");
       }
     }
   }

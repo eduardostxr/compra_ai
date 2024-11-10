@@ -1,4 +1,5 @@
 import 'package:compra/manager/auth_manager.dart';
+import 'package:compra/manager/user_manager.dart';
 import 'package:compra/ui/home/components/account_bottom_sheet.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
@@ -24,6 +25,29 @@ class _MyHomePageState extends State<MyHomePage> {
     {"id": "6", "title": "Lista 6", "emoji": "🍕"},
   ];
 
+  String userName = "Usuário";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  void _fetchUserName() async {
+    final authManager = Provider.of<AuthManager>(context, listen: false);
+    final userManager = Provider.of<UserManager>(context, listen: false);
+
+    final token = authManager.accessToken;
+    if (token.isNotEmpty) {
+      final response = await userManager.getMe(context, token);
+      if (response != null && response.statusCode == 200) {
+        setState(() {
+          userName = userManager.logedUser.name.split(" ").first;
+        });
+      }
+    }
+  }
+
   void _showAccountBottomSheet(Widget bottomSheetWidget) {
     showModalBottomSheet(
       context: context,
@@ -39,16 +63,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authManager =
-        Provider.of<AuthManager>(context);
-    String userName = authManager.accessToken.toString();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.orange,
         title: Row(
           children: [
             Text(
-              "Olá ${userName.split(" ").first}",
+              "Olá, $userName!",
               style: const TextStyle(color: AppColors.white),
             ),
           ],
