@@ -15,7 +15,6 @@ class ListManager {
   late final AuthManager authManager;
   late final String token;
 
-
   Future<ResponseModel?> createList({
     required String name,
     required String emoji,
@@ -30,7 +29,12 @@ class ListManager {
     );
   }
 
-    Future<ResponseModel?> getLists() async {
+  Future<ResponseModel?> getLists() async {
     return await ListService.getLists(token: token);
   }
+
+  Future<ResponseModel?> getItems(int listId) async {
+    return await ListService.getItems(token: token, listId: listId);
+  }
+  
 }

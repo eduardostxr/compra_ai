@@ -44,7 +44,7 @@ class _ListItemState extends State<ListItem> {
       height: 45,
       decoration: BoxDecoration(
         color: isChecked ? AppColors.lightPeach : AppColors.lightGray,
-        borderRadius: BorderRadius.circular(8), // Adiciona o radius
+        borderRadius: BorderRadius.circular(8), 
       ),
       child: Row(
         children: [

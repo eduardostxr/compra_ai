@@ -81,4 +81,42 @@ class ListService {
       return responseModel;
     }
   }
+
+  static Future<ResponseModel?> getItems({
+  required String token,
+  required int listId,
+}) async {
+  final String path = '/api/list/items/$listId';
+
+  try {
+    final response = await WebService.get(path, token);
+
+    if (response.statusCode == 200) {
+      List<dynamic> itemsData = jsonDecode(response.body);
+      ResponseModel responseModel = ResponseModel.fromJson(
+        response.statusCode,
+        "Itens obtidos com sucesso!",
+        itemsData,
+      );
+      debugPrint('Items fetched successfully: ${response.statusCode}');
+      return responseModel;
+    } else {
+      ResponseModel responseModel = ResponseModel.fromJson(
+        response.statusCode,
+        "Falha ao buscar itens",
+        jsonDecode(response.body),
+      );
+      debugPrint('Failed to fetch items: ${response.statusCode}');
+      return responseModel;
+    }
+  } catch (e) {
+    ResponseModel responseModel = ResponseModel.fromJson(
+      500,
+      "Erro de conexão. Tente novamente.",
+      null,
+    );
+    debugPrint('Error during items fetching: $e');
+    return responseModel;
+  }
+}
 }
