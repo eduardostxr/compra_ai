@@ -5,12 +5,14 @@ class InputField extends StatefulWidget {
   final String label;
   final String hint;
   final TextEditingController controller;
+  final TextInputType keyboardType;
 
   const InputField({
     super.key,
     required this.hint,
     required this.label,
     required this.controller,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -39,6 +41,7 @@ class _InputFieldState extends State<InputField> {
             height: 50,
             child: TextField(
               controller: widget.controller,
+              keyboardType: widget.keyboardType,
               decoration: InputDecoration(
                 hintText: widget.hint,
                 hintStyle: const TextStyle(color: AppColors.mediumGray),

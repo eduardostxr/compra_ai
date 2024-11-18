@@ -4,19 +4,55 @@ import '../web_service.dart';
 import 'package:flutter/material.dart';
 
 class ListService {
+  static Future<ResponseModel?> getLists({required String token}) async {
+    const String path = '/api/list';
+
+    try {
+      final response = await WebService.get(path, token);
+
+      if (response.statusCode == 200) {
+        List<dynamic> listData = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(
+          response.statusCode,
+          "Listas obtidas com sucesso!",
+          listData,
+        );
+        debugPrint('Lists fetched successfully: ${response.statusCode}');
+        return responseModel;
+      } else {
+        ResponseModel responseModel = ResponseModel.fromJson(
+          response.statusCode,
+          "Falha ao buscar listas",
+          jsonDecode(response.body),
+        );
+        debugPrint('Failed to fetch lists: ${response.statusCode}');
+        return responseModel;
+      }
+    } catch (e) {
+      ResponseModel responseModel = ResponseModel.fromJson(
+        500,
+        "Erro de conexão. Tente novamente.",
+        null,
+      );
+      debugPrint('Error during lists fetching: $e');
+      return responseModel;
+    }
+  }
+
   static Future<ResponseModel?> createList({
+    required String token,
     required String name,
     String? emoji,
-    double? maxSpend,
+    int? maxSpend,
   }) async {
-    const String path = '/api/lists';
+    const String path = '/api/list';
 
     try {
       final response = await WebService.post(path, {
         'name': name,
         'emoji': emoji,
         'maxSpend': maxSpend,
-      });
+      }, token);
 
       if (response.statusCode == 201) {
         ResponseModel responseModel = ResponseModel.fromJson(

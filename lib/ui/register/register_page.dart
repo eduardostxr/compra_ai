@@ -110,12 +110,14 @@ class CadastroPageState extends State<CadastroPage> {
               hint: "Digite seu nome",
               label: "Nome",
               controller: _nameController,
+              keyboardType: TextInputType.text,
             ),
             const SizedBox(height: 8),
             InputField(
               hint: "Digite seu email",
               label: "Email",
               controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 8),
             PasswordField(
@@ -134,12 +136,14 @@ class CadastroPageState extends State<CadastroPage> {
               hint: "(99) 99999-9999",
               label: "Telefone",
               controller: _phoneController,
+              keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 40),
             InputField(
               hint: "Digite sua chave pix",
               label: "Chave Pix",
               controller: _pixKeyController,
+              keyboardType: TextInputType.text,
             ),
             const SizedBox(height: 40),
             DefaultButton(

@@ -16,13 +16,16 @@ class WebService {
 
   static Future<http.Response> get(String path, String? token) async {
     try {
-      final response = await client.get(
-        _buildUri(path),
-        headers: {
-          "Content-Type": "application/json",
-          if (token != null) "Authorization": "Bearer $token",
-        },
-      );
+      final uri = _buildUri(path);
+      final headers = {
+        "Content-Type": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      };
+
+      debugPrint("GET Request to: $uri");
+      debugPrint("Headers: $headers");
+
+      final response = await client.get(uri, headers: headers);
       return response;
     } catch (e) {
       debugPrint("Failed to GET $path: $e");
@@ -33,15 +36,23 @@ class WebService {
   static Future<http.Response> post(String path, dynamic body,
       [String? token]) async {
     try {
+      final uri = _buildUri(path);
+      final headers = {
+        "Content-Type": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      };
+
+      // Print the request body and headers
+      debugPrint("POST Request to: $uri");
+      debugPrint("Headers: $headers");
+      debugPrint("Body: ${jsonEncode(body)}");
+
       final response = await client.post(
-        _buildUri(path),
-        headers: {
-          "Content-Type": "application/json",
-          if (token != null) "Authorization": "Bearer $token",
-        },
+        uri,
+        headers: headers,
         body: jsonEncode(body),
       );
-      debugPrint("body: $body");
+
       return response;
     } catch (e) {
       debugPrint("Failed to POST $path: $e");
@@ -52,14 +63,23 @@ class WebService {
   static Future<http.Response> put(String path, Map<String, dynamic>? body,
       [String? token]) async {
     try {
+      final uri = _buildUri(path);
+      final headers = {
+        "Content-Type": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      };
+
+      // Print the request body and headers
+      debugPrint("PUT Request to: $uri");
+      debugPrint("Headers: $headers");
+      debugPrint("Body: ${jsonEncode(body)}");
+
       final response = await client.put(
-        _buildUri(path),
-        headers: {
-          "Content-Type": "application/json",
-          if (token != null) "Authorization": "Bearer $token",
-        },
+        uri,
+        headers: headers,
         body: jsonEncode(body),
       );
+
       return response;
     } catch (e) {
       debugPrint("Failed to PUT $path: $e");
@@ -70,14 +90,23 @@ class WebService {
   static Future<http.Response> patch(String path, dynamic body,
       [String? token]) async {
     try {
+      final uri = _buildUri(path);
+      final headers = {
+        "Content-Type": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      };
+
+      // Print the request body and headers
+      debugPrint("PATCH Request to: $uri");
+      debugPrint("Headers: $headers");
+      debugPrint("Body: ${jsonEncode(body)}");
+
       final response = await client.patch(
-        _buildUri(path),
-        headers: {
-          "Content-Type": "application/json",
-          if (token != null) "Authorization": "Bearer $token",
-        },
+        uri,
+        headers: headers,
         body: jsonEncode(body),
       );
+
       return response;
     } catch (e) {
       debugPrint("Failed to PATCH $path: $e");
@@ -87,13 +116,20 @@ class WebService {
 
   static Future<http.Response> delete(String path, [String? token]) async {
     try {
+      final uri = _buildUri(path);
+      final headers = {
+        "Content-Type": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      };
+
+      debugPrint("DELETE Request to: $uri");
+      debugPrint("Headers: $headers");
+
       final response = await client.delete(
-        _buildUri(path),
-        headers: {
-          "Content-Type": "application/json",
-          if (token != null) "Authorization": "Bearer $token",
-        },
+        uri,
+        headers: headers,
       );
+
       return response;
     } catch (e) {
       debugPrint("Failed to DELETE $path: $e");

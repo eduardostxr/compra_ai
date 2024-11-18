@@ -26,10 +26,10 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> _login() async {
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    // String email =  "eduardo@gmail.com";
-    // String password =  "123456";
+    // String email = emailController.text.trim();
+    // String password = passwordController.text.trim();
+    String email =  "eduardo@gmail.com";
+    String password =  "123456";
 
     ResponseModel? response =
         await Provider.of<AuthManager>(context, listen: false)
@@ -77,6 +77,7 @@ class LoginPageState extends State<LoginPage> {
               hint: "Digite seu email",
               label: "Email",
               controller: emailController,
+              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 8),
             PasswordField(
