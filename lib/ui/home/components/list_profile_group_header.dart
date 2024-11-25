@@ -2,9 +2,11 @@ import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
 class ListProfileGroupHeader extends StatefulWidget {
-  const ListProfileGroupHeader({super.key, required this.onPressed});
+  const ListProfileGroupHeader(
+      {super.key, required this.onPressed, required this.text});
 
   final VoidCallback onPressed;
+  final String text;
 
   @override
   State<ListProfileGroupHeader> createState() => _ListProfileGroupHeaderState();
@@ -14,30 +16,21 @@ class _ListProfileGroupHeaderState extends State<ListProfileGroupHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsetsDirectional.only(
-        start: 16,
+      width: double.infinity,
+      margin: const EdgeInsetsDirectional.fromSTEB(
+        16,
+        16,
+        0,
+        16,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text("Minhas listas"),
-          Row(
-            children: [
-              TextButton(
-                onPressed: widget.onPressed,
-                style:
-                    TextButton.styleFrom(foregroundColor: AppColors.mediumGray),
-                child: const Row(
-                  children: [
-                    Text("Ver todas"),
-                    SizedBox(width: 4),
-                    Icon(Icons.arrow_forward),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+      child: Text(
+        widget.text,
+        style: const TextStyle(
+          color: AppColors.darkGray,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
+        textAlign: TextAlign.start,
       ),
     );
   }

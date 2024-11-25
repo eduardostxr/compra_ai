@@ -3,7 +3,7 @@ import 'package:compra/models/response_model.dart';
 import 'package:compra/ui/_common/generic_page_header.dart';
 import 'package:compra/ui/_common/input_field.dart';
 import 'package:compra/ui/_common/password_field.dart';
-import 'package:compra/ui/login/login_page.dart';
+import 'package:compra/ui/start/starting_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,6 @@ class CadastroPageState extends State<CadastroPage> {
   }
 
   Future<void> handleSignUp(BuildContext context) async {
-    FocusScope.of(context).unfocus();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -64,11 +63,12 @@ class CadastroPageState extends State<CadastroPage> {
           SnackBarService.showSuccess(response.message);
           await Future.delayed(const Duration(seconds: 2));
           if (context.mounted) {
-            Navigator.pushReplacement(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const LoginPage(),
+                builder: (context) => const StartingPage(),
               ),
+              (Route<dynamic> route) => false,
             );
           }
         } else {

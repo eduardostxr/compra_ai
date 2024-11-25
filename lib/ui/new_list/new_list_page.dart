@@ -2,6 +2,7 @@ import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/manager/list_manager.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:compra/ui/_common/input_field.dart';
+import 'package:compra/ui/home/home_page.dart';
 import 'package:compra/ui/new_list/components/emoji_input_field.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -62,7 +63,12 @@ class _NewListPageState extends State<NewListPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response.message)),
         );
-        Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+  context,
+  MaterialPageRoute(builder: (context) => const MyHomePage()),
+  (Route<dynamic> route) => false,
+);
+
       }
     } else {
       if (mounted) {

@@ -4,9 +4,14 @@ import 'list_profile.dart';
 import 'add_list_button.dart';
 
 class ListProfileGroup extends StatefulWidget {
-  const ListProfileGroup({super.key, required this.profiles});
+  const ListProfileGroup({
+    super.key,
+    required this.profiles,
+    required this.onProfileTap,
+  });
 
   final List<Map<String, dynamic>> profiles;
+  final Function(int index, Map<String, dynamic> profile) onProfileTap;
 
   @override
   State<ListProfileGroup> createState() => _ListProfileGroupState();
@@ -19,6 +24,9 @@ class _ListProfileGroupState extends State<ListProfileGroup> {
     setState(() {
       _selectedIndex = index;
     });
+
+    // Chamar a função passada do widget pai
+    widget.onProfileTap(index, widget.profiles[index]);
   }
 
   @override
@@ -29,23 +37,27 @@ class _ListProfileGroupState extends State<ListProfileGroup> {
         color: AppColors.offWhite,
       ),
       height: 100,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.profiles.length + 1,
-        separatorBuilder: (context, index) => const SizedBox(width: 6),
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return const AddListButton();
-          } else {
-            final profile = widget.profiles[index - 1];
-            return ListProfile(
-              title: profile['title'],
-              emoji: profile['emoji'],
-              isSelected: _selectedIndex == index - 1,
-              onSelected: () => _onProfileSelected(index - 1),
-            );
-          }
-        },
+      child: Row(
+        children: [
+          const AddListButton(),
+          const SizedBox(width: 6),
+          Expanded(
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.profiles.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 6),
+              itemBuilder: (context, index) {
+                final profile = widget.profiles[index];
+                return ListProfile(
+                  title: profile['title'],
+                  emoji: profile['emoji'],
+                  isSelected: _selectedIndex == index,
+                  onSelected: () => _onProfileSelected(index),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

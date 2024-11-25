@@ -36,7 +36,7 @@ class StartingPage extends StatelessWidget {
             color: AppColors.darkGreen,
             label: "Entrar",
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginPage()),
               );

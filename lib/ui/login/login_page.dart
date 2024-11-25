@@ -28,7 +28,9 @@ class LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     // String email = emailController.text.trim();
     // String password = passwordController.text.trim();
-    String email =  "eduardo@gmail.com";
+    // String email =  "eduardo@gmail.com";
+    // String password =  "123456";
+    String email =  "pabloescobar12@gmail.com";
     String password =  "123456";
 
     ResponseModel? response =

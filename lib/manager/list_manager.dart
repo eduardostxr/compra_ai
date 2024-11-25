@@ -33,8 +33,12 @@ class ListManager {
     return await ListService.getLists(token: token);
   }
 
-  Future<ResponseModel?> getItems(int listId) async {
-    return await ListService.getItems(token: token, listId: listId);
+  // Future<ResponseModel?> getItems(int listId) async {
+  //   return await ListService.getItems(token: token, listId: listId);
+  // }
+
+    Future<ResponseModel?> getListItems(int listId) async {
+    return await ListService.getListItems(token: token, listId: listId);
   }
   
 }

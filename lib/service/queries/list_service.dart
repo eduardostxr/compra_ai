@@ -82,7 +82,7 @@ class ListService {
     }
   }
 
-  static Future<ResponseModel?> getItems({
+  static Future<ResponseModel?> getListItems({
   required String token,
   required int listId,
 }) async {
@@ -92,7 +92,7 @@ class ListService {
     final response = await WebService.get(path, token);
 
     if (response.statusCode == 200) {
-      List<dynamic> itemsData = jsonDecode(response.body);
+      dynamic itemsData = jsonDecode(response.body);
       ResponseModel responseModel = ResponseModel.fromJson(
         response.statusCode,
         "Itens obtidos com sucesso!",

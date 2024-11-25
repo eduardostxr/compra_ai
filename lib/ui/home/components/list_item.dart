@@ -44,16 +44,19 @@ class _ListItemState extends State<ListItem> {
       height: 45,
       decoration: BoxDecoration(
         color: isChecked ? AppColors.lightPeach : AppColors.lightGray,
-        borderRadius: BorderRadius.circular(8), 
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          Checkbox(
-            side: BorderSide.none,
-            fillColor: WidgetStateProperty.all(AppColors.gray),
-            value: isChecked,
-            checkColor: AppColors.orange,
-            onChanged: _toggleCheckbox,
+          Transform.scale(
+            scale: 1.3,
+            child: Checkbox(
+              side: BorderSide.none,
+              fillColor: WidgetStateProperty.all(AppColors.gray),
+              value: isChecked,
+              checkColor: AppColors.orange,
+              onChanged: _toggleCheckbox,
+            ),
           ),
           Expanded(
             child: Text(
@@ -68,10 +71,12 @@ class _ListItemState extends State<ListItem> {
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: widget.onInfoPressed,
+            color: isChecked ? AppColors.mediumGray : AppColors.darkGray,
           ),
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: widget.onMorePressed,
+            color: isChecked ? AppColors.mediumGray : AppColors.darkGray,
           ),
         ],
       ),

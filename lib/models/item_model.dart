@@ -3,11 +3,11 @@ class ItemModel {
   final String createdAt;
   final String? updatedAt;
   final String? deletedAt;
-  final String name;
-  final String description;
-  final double price;
-  final int quantity;
-  final bool checked;
+  String name;
+  String description;
+  double? price;
+  int quantity;
+  bool checked;
 
   ItemModel({
     required this.id,
@@ -16,22 +16,22 @@ class ItemModel {
     this.deletedAt,
     required this.name,
     required this.description,
-    required this.price,
+    this.price,
     required this.quantity,
     required this.checked,
   });
 
   factory ItemModel.fromJson(Map<String, dynamic> json) {
     return ItemModel(
-      id: json['id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      deletedAt: json['deletedAt'],
-      name: json['name'],
-      description: json['description'],
-      price: (json['price'] as num).toDouble(),
-      quantity: json['quantity'],
-      checked: json['checked'],
+      id: json["id"],
+      createdAt: json["createdAt"],
+      updatedAt: json["updatedAt"],
+      deletedAt: json["deletedAt"],
+      name: json["name"],
+      description: json["description"],
+      price: json["price"] != null ? (json["price"] as num).toDouble() : null,
+      quantity: json["quantity"],
+      checked: json["checked"],
     );
   }
 }

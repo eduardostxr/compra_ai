@@ -1,5 +1,5 @@
 class UserModel {
-  String? id;
+  int? id;
   final String email;
   final String name;
   final String telephone;
@@ -15,7 +15,7 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] ?? '',
+      id: json['id'] ?? 0,
       email: json['email'] ?? '',
       name: json['name'] ?? '',
       telephone: json['telephone'] ?? '',
@@ -25,17 +25,5 @@ class UserModel {
 
 
 
-Map<String, dynamic> toJson() {
-  final data = {
-    "email": email,
-    "name": name,
-    "telephone": telephone,
-    "pixKey": pixKey,
-  };
-  if (id != null) {
-    data["id"] = id!;
-  }
-  return data;
-}
 
 }

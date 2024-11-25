@@ -15,6 +15,7 @@ class AccountBottomSheet extends StatelessWidget {
       title: "Gerenciar conta",
       children: [
         FilledButton(
+        
           style: ButtonStyle(
             backgroundColor:
                 WidgetStateProperty.all<Color>(AppColors.lightGray),
@@ -23,6 +24,7 @@ class AccountBottomSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
+            minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 50)),
           ),
           onPressed: () => Navigator.pushAndRemoveUntil(
             context,

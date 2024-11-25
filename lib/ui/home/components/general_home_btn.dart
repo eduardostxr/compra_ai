@@ -34,7 +34,7 @@ class GeneralHomeBtn extends StatelessWidget {
           children: [
             Icon(icon),
             const SizedBox(width: 16),
-            Text(label),
+            Text(label, style: const TextStyle(fontSize: 16),),
           ],
         ),
       ),

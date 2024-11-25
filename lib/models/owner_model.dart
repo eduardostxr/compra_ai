@@ -23,15 +23,15 @@ class OwnerModel {
 
   factory OwnerModel.fromJson(Map<String, dynamic> json) {
     return OwnerModel(
-      id: json['id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      deletedAt: json['deletedAt'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
-      telephone: json['telephone'],
-      pixKey: json['pixKey'],
+      id: json["id"],
+      createdAt: json["createdAt"],
+      updatedAt: json["updatedAt"],
+      deletedAt: json["deletedAt"],
+      name: json["name"],
+      email: json["email"],
+      password: json["password"],
+      telephone: json["telephone"],
+      pixKey: json["pixKey"],
     );
   }
 }

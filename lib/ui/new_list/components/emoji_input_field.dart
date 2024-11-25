@@ -38,17 +38,19 @@ class EmojiInputFieldState extends State<EmojiInputField> {
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 50,
             child: TextField(
               controller: widget.controller,
               decoration: InputDecoration(
                 hintText: widget.hint,
                 hintStyle: const TextStyle(color: AppColors.mediumGray),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.darkGreen, width: 2),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.darkGreen, width: 2),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: AppColors.orange, width: 2),
+                focusedBorder:  OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.orange, width: 2),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 suffixIcon: GestureDetector(

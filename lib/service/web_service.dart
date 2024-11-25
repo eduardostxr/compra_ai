@@ -42,7 +42,6 @@ class WebService {
         if (token != null) "Authorization": "Bearer $token",
       };
 
-      // Print the request body and headers
       debugPrint("POST Request to: $uri");
       debugPrint("Headers: $headers");
       debugPrint("Body: ${jsonEncode(body)}");
