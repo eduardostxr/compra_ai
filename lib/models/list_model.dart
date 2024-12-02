@@ -1,4 +1,5 @@
 import 'package:compra/models/user_model.dart';
+import 'package:compra/models/item_model.dart'; // Ensure you import the ItemModel
 
 class ListModel {
   final int id;
@@ -7,10 +8,11 @@ class ListModel {
   final String deletedAt;
   final String name;
   final String emoji;
-  final int? totalPrice;
-  final int? maxSpend;
+  final double? totalPrice;
+  final double? maxSpend;
   final int ownerId;
   final List<UserModel> userLists;
+  List<ItemModel> items; // Add this line for the 'items' property
 
   ListModel({
     required this.id,
@@ -23,6 +25,7 @@ class ListModel {
     required this.maxSpend,
     required this.ownerId,
     required this.userLists,
+    required this.items, // Include this in the constructor
   });
 
   factory ListModel.fromJson(Map<String, dynamic> json) {
@@ -33,13 +36,23 @@ class ListModel {
       deletedAt: json['deletedAt'] ?? "",
       name: json['name'] ?? "",
       emoji: json['emoji'] ?? "",
-      totalPrice: json['totalPrice'] ?? 0,
-      maxSpend: json['maxSpend'] ?? 0,
+      totalPrice: (json['totalPrice'] != null)
+          ? (json['totalPrice'] as num).toDouble()
+          : null,
+      maxSpend: (json['maxSpend'] != null)
+          ? (json['maxSpend'] as num).toDouble()
+          : null,
       ownerId: json['ownerId'] ?? 0,
-      userLists: json['userLists']
+      userLists: json['userLists'] != null
+          ? (json['userLists'] as List<dynamic>)
               .map<UserModel>((user) => UserModel.fromJson(user))
-              .toList() ??
-          [],
+              .toList()
+          : [],
+      items: json['items'] != null
+          ? (json['items'] as List<dynamic>)
+              .map<ItemModel>((item) => ItemModel.fromJson(item))
+              .toList()
+          : [],
     );
   }
 
@@ -48,6 +61,7 @@ class ListModel {
       "name": name,
       "emoji": emoji,
       "maxSpend": maxSpend,
+      "items": items.map((item) => item.toJson()), 
     };
     return data;
   }

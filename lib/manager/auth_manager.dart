@@ -1,4 +1,6 @@
+import 'package:compra/manager/user_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../service/queries/auth_service.dart';
 import '../models/response_model.dart';
 
@@ -26,6 +28,9 @@ class AuthManager with ChangeNotifier {
     );
 
     if (response != null && response.statusCode == 200) {
+      if(context.mounted) {
+      Provider.of<UserManager>(context, listen: false).getMe(context);
+      }
       setAccessToken(response.value["accessToken"]);
       setRefreshToken(response.value["refreshToken"]);
       debugPrint("Login successful. Tokens set.");

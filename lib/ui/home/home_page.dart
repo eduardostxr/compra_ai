@@ -1,10 +1,17 @@
 import 'package:compra/manager/auth_manager.dart';
+import 'package:compra/manager/item_manager.dart';
 import 'package:compra/manager/list_manager.dart';
 import 'package:compra/manager/user_manager.dart';
 import 'package:compra/models/complete_list_model.dart';
+import 'package:compra/models/item_model.dart';
 import 'package:compra/models/list_model.dart';
 import 'package:compra/ui/home/components/account_bottom_sheet.dart';
+import 'package:compra/ui/home/components/add_list_button.dart';
+import 'package:compra/ui/home/components/item_bottom_sheet.dart';
 import 'package:compra/ui/home/components/list_item.dart';
+import 'package:compra/ui/home/components/list_profile.dart';
+import 'package:compra/ui/new_item/new_item_page.dart';
+import 'package:compra/ui/update_item/update_item_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
@@ -20,7 +27,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Map<String, dynamic>> lists = [];
+  List<ListModel> lists = [];
+  ListModel? chosenList;
   CompleteListModel? completeList;
   String userName = "Usuário";
   bool isLoading = true;
@@ -28,6 +36,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    chosenList = context.read<ListManager>().selectedList;
+    if (chosenList != null) {
+      _fetchListItems(chosenList!);
+    }
     _fetchUserName();
     _fetchLists();
   }
@@ -38,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final token = authManager.accessToken;
     if (token.isNotEmpty) {
-      final response = await userManager.getMe(context, token);
+      final response = await userManager.getMe(context);
       if (response != null && response.statusCode == 200) {
         setState(() {
           userName = userManager.logedUser.name.split(" ").first;
@@ -58,14 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (response != null && response.statusCode == 200) {
           final data = response.value as List<dynamic>;
           setState(() {
-            lists = data
-                .map((json) => ListModel.fromJson(json))
-                .map((list) => {
-                      "id": list.id.toString(),
-                      "title": list.name,
-                      "emoji": list.emoji,
-                    })
-                .toList();
+            lists = data.map((json) => ListModel.fromJson(json)).toList();
           });
         }
       }
@@ -78,38 +83,76 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-void _fetchListItems(Map<String, dynamic> profile) async {
-  try {
-    final authManager = Provider.of<AuthManager>(context, listen: false);
-    final listManager = ListManager(context);
+  void _fetchListItems(ListModel profile) async {
+    try {
+      final authManager = Provider.of<AuthManager>(context, listen: false);
+      final listManager = ListManager(context);
 
-    final token = authManager.accessToken;
-    if (token.isNotEmpty) {
-      final response = await listManager.getListItems(int.parse(profile["id"]));
-      debugPrint("Response for profile ID ${profile["id"]}: $response");
+      final token = authManager.accessToken;
+      if (token.isNotEmpty) {
+        final response = await listManager.getListItems(profile.id);
+        debugPrint("Response for profile ID ${profile.id}: $response");
 
-      if (response != null && response.statusCode == 200) {
-        final data = response.value;
+        if (response != null && response.statusCode == 200) {
+          final data = response.value;
 
-        if (data is Map<String, dynamic>) {
-          setState(() {
-            completeList = CompleteListModel.fromJson(data);
-          });
-          debugPrint("Complete list fetched successfully: ${completeList?.name}");
-        } else {
-          debugPrint("Unexpected data type: ${data.runtimeType}");
+          if (data is Map<String, dynamic>) {
+            setState(() {
+              completeList = CompleteListModel.fromJson(data);
+            });
+            debugPrint(
+                "Complete list fetched successfully: ${completeList?.name}");
+          } else {
+            debugPrint("Unexpected data type: ${data.runtimeType}");
+          }
         }
       }
+    } catch (error) {
+      debugPrint("Error fetching complete list: $error");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-  } catch (error) {
-    debugPrint("Error fetching complete list: $error");
-  } finally {
-    setState(() {
-      isLoading = false;
-    });
   }
-}
 
+  Future<bool> _checkItem(ItemModel item) async {
+    ItemModel retorno = item;
+    try {
+      final authManager = Provider.of<AuthManager>(context, listen: false);
+      final itemManager = ItemManager(context);
+
+      final token = authManager.accessToken;
+      if (token.isNotEmpty) {
+        final response = await itemManager.checkItem(itemId: item.id);
+
+        debugPrint("Response for item ID ${item.id}: $response");
+
+        if (response != null && response.statusCode == 200) {
+          retorno = ItemModel.fromJson(response.value);
+          setState(() {
+            final index = completeList!.items
+                .indexWhere((element) => element.id == item.id);
+            if (index != -1) {
+              completeList!.items[index].checked =
+                  !completeList!.items[index].checked;
+            }
+            completeList!.items[index].checked = retorno.checked;
+          });
+          debugPrint("Item ${item.id} atualizado com sucesso!");
+        } else {
+          debugPrint("Falha ao marcar/desmarcar o item.");
+        }
+      }
+    } catch (error) {
+      debugPrint("Erro ao atualizar o status do item: $error");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+    return retorno.checked;
+  }
 
   void _showAccountBottomSheet(Widget bottomSheetWidget) {
     showModalBottomSheet(
@@ -122,6 +165,48 @@ void _fetchListItems(Map<String, dynamic> profile) async {
         return bottomSheetWidget;
       },
     );
+  }
+
+  void _showItemBottomSheet(Widget bottomSheetWidget) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.offWhite,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return bottomSheetWidget;
+      },
+    );
+  }
+
+  void _deleteItem(ItemModel item) async {
+    try {
+      final authManager = Provider.of<AuthManager>(context, listen: false);
+      final itemManager = ItemManager(context);
+
+      final token = authManager.accessToken;
+      if (token.isNotEmpty) {
+        final response = await itemManager.deleteItem(itemId: item.id);
+
+        debugPrint("Response for item ID ${item.id}: $response");
+
+        if (response != null && response.statusCode == 204) {
+          setState(() {
+            completeList!.items.removeWhere((element) => element.id == item.id);
+          });
+          debugPrint("Item ${item.id} deletado com sucesso!");
+        } else {
+          debugPrint("Falha ao deletar o item.");
+        }
+      }
+    } catch (error) {
+      debugPrint("Erro ao deletar o item: $error");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -162,6 +247,7 @@ void _fetchListItems(Map<String, dynamic> profile) async {
                     profiles: lists,
                     onProfileTap: (index, profile) {
                       _fetchListItems(profile);
+                      context.read<ListManager>().selectedList = profile;
                     },
                   ),
                   Expanded(
@@ -185,20 +271,70 @@ void _fetchListItems(Map<String, dynamic> profile) async {
                             GeneralHomeBtn(
                               icon: Icons.add,
                               label: "Adicionar Item",
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NewItemPage(
+                                      listId: completeList!.id,
+                                    ),
+                                  ),
+                                ).then((value) {
+                                  if (chosenList != null) {
+                                    _fetchListItems(chosenList!);
+                                  }
+                                });
+                              },
                             ),
                             completeList != null &&
                                     completeList!.items.isNotEmpty
                                 ? ListView.builder(
                                     itemBuilder: (context, index) => ListItem(
-                                      name: completeList!.items[index].name,
-                                      isChecked:
-                                          completeList!.items[index].checked,
-                                      onInfoPressed: () {
-                                      },
+                                      item: completeList!.items[index],
+                                      onInfoPressed: () {},
                                       onMorePressed: () {
+                                        _showItemBottomSheet(
+                                          ItemBottomSheet(
+                                            title:
+                                                completeList!.items[index].name,
+                                            onDeleted: () {
+                                              _deleteItem(
+                                                  completeList!.items[index]);
+                                              Navigator.pop(context);
+                                            },
+                                            onEdited: () {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpdateItemPage(
+                                                    item: completeList!
+                                                        .items[index],
+                                                  ),
+                                                ),
+                                              ).then((value) {
+                                               
+                                                  setState(() {
+                                                    // final index = completeList!
+                                                    //     .items
+                                                    //     .indexWhere((item) =>
+                                                    //         item.id ==
+                                                    //         value.id);
+                                                    // if (index != -1) {
+                                                    //   completeList!
+                                                    //       .items[index] = value;
+                                                    // }
+                                                  });
+                                                
+                                              
+                                              });
+                                      }),
+                                        );
                                       },
-                                      onChecked: (bool checked) {
+                                      onChecked: (bool checked) async {
+                                        await _checkItem(
+                                            completeList!.items[index]);
                                         setState(() {
                                           completeList!.items[index].checked =
                                               checked;

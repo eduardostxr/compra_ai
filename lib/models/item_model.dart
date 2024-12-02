@@ -3,9 +3,9 @@ class ItemModel {
   final String createdAt;
   final String? updatedAt;
   final String? deletedAt;
-  String name;
-  String description;
+  String? description;
   double? price;
+  String name;
   int quantity;
   bool checked;
 
@@ -33,5 +33,21 @@ class ItemModel {
       quantity: json["quantity"],
       checked: json["checked"],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = {
+      "name": name,
+      "description": description,
+      "price": price,
+      "quantity": quantity,
+      "checked": checked,
+    };
+
+    if (id != 0) {
+      data["id"] = id;
+    }
+
+    return data;
   }
 }

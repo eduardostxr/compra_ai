@@ -1,3 +1,4 @@
+import 'package:compra/models/list_model.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 import 'list_profile.dart';
@@ -10,8 +11,8 @@ class ListProfileGroup extends StatefulWidget {
     required this.onProfileTap,
   });
 
-  final List<Map<String, dynamic>> profiles;
-  final Function(int index, Map<String, dynamic> profile) onProfileTap;
+  final List<ListModel> profiles;
+  final Function(int index, ListModel profile) onProfileTap;
 
   @override
   State<ListProfileGroup> createState() => _ListProfileGroupState();
@@ -25,7 +26,6 @@ class _ListProfileGroupState extends State<ListProfileGroup> {
       _selectedIndex = index;
     });
 
-    // Chamar a função passada do widget pai
     widget.onProfileTap(index, widget.profiles[index]);
   }
 
@@ -49,8 +49,8 @@ class _ListProfileGroupState extends State<ListProfileGroup> {
               itemBuilder: (context, index) {
                 final profile = widget.profiles[index];
                 return ListProfile(
-                  title: profile['title'],
-                  emoji: profile['emoji'],
+                  title: profile.name,
+                  emoji: profile.emoji,
                   isSelected: _selectedIndex == index,
                   onSelected: () => _onProfileSelected(index),
                 );

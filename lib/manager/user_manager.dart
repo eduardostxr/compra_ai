@@ -1,6 +1,8 @@
+import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/models/user_model.dart';
 import 'package:compra/service/queries/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/response_model.dart';
 
 class UserManager with ChangeNotifier {
@@ -13,8 +15,8 @@ class UserManager with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ResponseModel?> getMe(BuildContext context, String token) async {
-    ResponseModel? response = await UserService.getMe(token: token);
+  Future<ResponseModel?> getMe(BuildContext context) async {
+    ResponseModel? response = await UserService.getMe(token: Provider.of<AuthManager>(context, listen: false).accessToken);
     
     if (response != null && response.statusCode == 200) {
       setLogedUser(UserModel.fromJson(response.value));

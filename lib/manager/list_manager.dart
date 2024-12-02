@@ -1,11 +1,14 @@
 import 'package:compra/manager/auth_manager.dart';
+import 'package:compra/models/list_model.dart';
 import 'package:compra/service/queries/list_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/response_model.dart';
 
-class ListManager {
+class ListManager extends ChangeNotifier {
   final BuildContext context;
+  ListModel? selectedList;
+
 
   ListManager(this.context) {
     authManager = Provider.of<AuthManager>(context, listen: false);

@@ -1,3 +1,4 @@
+import 'package:compra/manager/list_manager.dart';
 import 'package:compra/manager/user_manager.dart';
 import 'package:compra/my_app.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthManager()),
         ChangeNotifierProvider(create: (context) => UserManager()),
+        ChangeNotifierProvider(create: (context) => ListManager(context)),
+        
       ],
       child: const MyApp(),
     ),

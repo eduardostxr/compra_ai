@@ -1,10 +1,10 @@
 import 'package:compra/ui/_common/custom_bottom_sheet.dart';
+import 'package:compra/ui/_common/sheet_button.dart';
 import 'package:compra/ui/start/starting_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
 class AccountBottomSheet extends StatelessWidget {
-
   const AccountBottomSheet({
     super.key,
   });
@@ -14,33 +14,17 @@ class AccountBottomSheet extends StatelessWidget {
     return CustomBottomSheet(
       title: "Gerenciar conta",
       children: [
-        FilledButton(
-        
-          style: ButtonStyle(
-            backgroundColor:
-                WidgetStateProperty.all<Color>(AppColors.lightGray),
-            shape: WidgetStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 50)),
-          ),
-          onPressed: () => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const StartingPage(),
-            ),
-            (route) => false,
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Sair', style: TextStyle(color: AppColors.red)),
-              Icon(Icons.exit_to_app_outlined, color: AppColors.red),
-            ],
-          ),
-        ),
+        SheetButton(
+            color: AppColors.red,
+            onPressed: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StartingPage(),
+                  ),
+                  (route) => false,
+                ),
+            icon: Icons.exit_to_app_outlined,
+            label: "Sair")
       ],
     );
   }
