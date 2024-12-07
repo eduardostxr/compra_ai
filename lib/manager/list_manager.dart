@@ -1,47 +1,60 @@
-import 'package:compra/manager/auth_manager.dart';
+import 'package:compra/models/complete_list_model.dart';
+import 'package:compra/models/item_model.dart';
 import 'package:compra/models/list_model.dart';
 import 'package:compra/service/queries/list_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/response_model.dart';
 
 class ListManager extends ChangeNotifier {
-  final BuildContext context;
-  ListModel? selectedList;
+  CompleteListModel? completeList;
+  List<ListModel> lists = [];
 
-
-  ListManager(this.context) {
-    authManager = Provider.of<AuthManager>(context, listen: false);
-    token = authManager.accessToken;
+  void setLists(List<ListModel> lists) {
+    this.lists = lists;
+    notifyListeners();
   }
 
-  late final AuthManager authManager;
-  late final String token;
-
-  Future<ResponseModel?> createList({
-    required String name,
-    required String emoji,
-    required String token,
-    int? maxSpend,
-  }) async {
-    return await ListService.createList(
-      name: name,
-      emoji: emoji,
-      maxSpend: maxSpend,
-      token: token,
-    );
+  void setCompleteList(CompleteListModel completeList) {
+    this.completeList = completeList;
+    notifyListeners();
   }
 
-  Future<ResponseModel?> getLists() async {
-    return await ListService.getLists(token: token);
+  void updateItemStatus(ItemModel updatedItem) {
+    final index = completeList!.items.indexWhere((item) => item.id == updatedItem.id);
+    if (index != -1) {
+      completeList!.items[index] = updatedItem;
+      notifyListeners();
+    }
   }
 
-  // Future<ResponseModel?> getItems(int listId) async {
-  //   return await ListService.getItems(token: token, listId: listId);
-  // }
 
-    Future<ResponseModel?> getListItems(int listId) async {
-    return await ListService.getListItems(token: token, listId: listId);
+  Future<ResponseModel?> getLists(String token) async {
+    ResponseModel? response = await ListService.getLists(token: token);
+
+    if (response != null && response.statusCode == 200) {
+      List<ListModel> data = (response.value as List)
+          .map((item) => ListModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+      setLists(data);
+      debugPrint("Lists successfully fetched and updated.");
+    } else {
+      debugPrint("Failed to fetch lists. Message: ${response?.message}");
+    }
+
+    return response;
   }
-  
+
+  Future<ResponseModel?> getListItems(String token, int listId) async {
+    ResponseModel? response =
+        await ListService.getListItems(token: token, listId: listId);
+    if (response != null && response.statusCode == 200) {
+      CompleteListModel data =
+          CompleteListModel.fromJson(response.value as Map<String, dynamic>);
+      setCompleteList(data);
+      debugPrint("List items successfully fetched and updated.");
+    } else {
+      debugPrint("Failed to fetch list items. Message: ${response?.message}");
+    }
+    return response;
+  }
 }

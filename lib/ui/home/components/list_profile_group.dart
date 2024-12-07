@@ -12,7 +12,7 @@ class ListProfileGroup extends StatefulWidget {
   });
 
   final List<ListModel> profiles;
-  final Function(int index, ListModel profile) onProfileTap;
+  final Function(ListModel profile) onProfileTap;
 
   @override
   State<ListProfileGroup> createState() => _ListProfileGroupState();
@@ -26,7 +26,7 @@ class _ListProfileGroupState extends State<ListProfileGroup> {
       _selectedIndex = index;
     });
 
-    widget.onProfileTap(index, widget.profiles[index]);
+    widget.onProfileTap(widget.profiles[index]);
   }
 
   @override

@@ -1,13 +1,9 @@
-import 'package:compra/manager/auth_manager.dart';
-import 'package:compra/manager/list_manager.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:compra/ui/_common/input_field.dart';
-import 'package:compra/ui/home/home_page.dart';
 import 'package:compra/ui/new_list/components/emoji_input_field.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class NewListPage extends StatefulWidget {
   const NewListPage({super.key});
@@ -33,50 +29,6 @@ class _NewListPageState extends State<NewListPage> {
         );
       },
     );
-  }
-
-  Future<void> _createList() async {
-    String name = nameController.text.trim();
-    String? emoji = emojiFieldKey.currentState?.selectedEmoji;
-    int? maxSpend = maxSpendController.text.isNotEmpty
-        ? int.tryParse(maxSpendController.text)
-        : null;
-
-    if (name.isEmpty || (emoji == null || emoji.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("O nome e o emoji são obrigatórios!")),
-      );
-      return;
-    }
-
-
-    String token = Provider.of<AuthManager>(context, listen: false).accessToken;
-    final response = await ListManager(context).createList(
-      token: token,
-      name: name,
-      emoji: emoji,
-      maxSpend: maxSpend,
-    );
-
-    if (response != null && response.statusCode == 201) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message)),
-        );
-        Navigator.pushAndRemoveUntil(
-  context,
-  MaterialPageRoute(builder: (context) => const MyHomePage()),
-  (Route<dynamic> route) => false,
-);
-
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response?.message ?? "Erro ao criar a lista")),
-        );
-      }
-    }
   }
 
   @override
@@ -107,7 +59,7 @@ class _NewListPageState extends State<NewListPage> {
             DefaultButton(
               color: AppColors.darkGreen,
               label: "Criar Lista",
-              onPressed: _createList,
+              onPressed: () {},
             ),
           ],
         ),

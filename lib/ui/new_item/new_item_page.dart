@@ -1,9 +1,12 @@
+import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/manager/item_manager.dart';
+import 'package:compra/manager/list_manager.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:compra/ui/_common/generic_page_header.dart';
 import 'package:compra/ui/_common/input_field.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NewItemPage extends StatefulWidget {
   final int listId;
@@ -30,33 +33,6 @@ class _NewItemPageState extends State<NewItemPage> {
     });
   }
 
-  void _createItem() {
-    final String name = nameController.text.trim();
-    final double? quantity = quantityController.text.isNotEmpty
-        ? double.tryParse(quantityController.text)
-        : null;
-    final double? price = double.tryParse(priceController.text);
-    final String? description = descriptionController.text.trim().isEmpty
-        ? null
-        : descriptionController.text;
-
-    final ItemManager itemManager = ItemManager(context);
-
-    itemManager.createItem(
-      listId: widget.listId,
-      name: name,
-      quantity: quantity!,
-      price: price,
-      description: description,
-    );
-
-    nameController.clear();
-    quantityController.clear();
-    priceController.clear();
-    descriptionController.clear();
-    _validateInputs();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -79,52 +55,67 @@ class _NewItemPageState extends State<NewItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Novo Item"),
-        foregroundColor: AppColors.offWhite,
-        backgroundColor: AppColors.orange,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-            const GenericPageHeader(
-              title: "",
-              subtitle: "Dê um nome para o item e o restante é opcional.",
-            ),
-            const SizedBox(height: 16),
-            InputField(
-              hint: "Ex: Banana",
-              label: "Item",
-              controller: nameController,
-            ),
-            InputField(
-              hint: "Ex: 5",
-              label: "Quantidade",
-              controller: quantityController,
-              keyboardType: TextInputType.number,
-            ),
-            InputField(
-              hint: "Ex: 50.50",
-              label: "Preço",
-              controller: priceController,
-              keyboardType: TextInputType.number,
-            ),
-            InputField(
-              hint: "Ex: A marca tal",
-              label: "Observação",
-              controller: descriptionController,
-              moreLines: true,
-            ),
-            const SizedBox(height: 32),
-            DefaultButton(
-              color:
-                  _isButtonEnabled ? AppColors.darkGreen : AppColors.mediumGray,
-              label: "Adicionar",
-              onPressed: _isButtonEnabled ? _createItem : () {},
-            ),
-          ],
+    return Consumer3<ItemManager, ListManager, AuthManager>(
+      builder: (context, itemManager, listManager, authManager, child) => Scaffold(
+        appBar: AppBar(
+          title: const Text("Novo Item"),
+          foregroundColor: AppColors.offWhite,
+          backgroundColor: AppColors.orange,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              const GenericPageHeader(
+                title: "",
+                subtitle: "Dê um nome para o item e o restante é opcional.",
+              ),
+              const SizedBox(height: 16),
+              InputField(
+                hint: "Ex: Banana",
+                label: "Item",
+                controller: nameController,
+              ),
+              InputField(
+                hint: "Ex: 5",
+                label: "Quantidade",
+                controller: quantityController,
+                keyboardType: TextInputType.number,
+              ),
+              InputField(
+                hint: "Ex: 50.50",
+                label: "Preço",
+                controller: priceController,
+                keyboardType: TextInputType.number,
+              ),
+              InputField(
+                hint: "Ex: A marca tal",
+                label: "Observação",
+                controller: descriptionController,
+                moreLines: true,
+              ),
+              const SizedBox(height: 32),
+              DefaultButton(
+                color: _isButtonEnabled
+                    ? AppColors.darkGreen
+                    : AppColors.mediumGray,
+                label: "Adicionar",
+                onPressed: _isButtonEnabled
+                    ? () {
+                        itemManager.createItem(
+                          context: context,
+                          listId: widget.listId,
+                          name: nameController.text,
+                          quantity: double.parse(quantityController.text),
+                          price: double.tryParse(priceController.text),
+                          description: descriptionController.text,
+                        );
+                        Navigator.pop(context);
+                      }
+                    : () {},
+              ),
+            ],
+          ),
         ),
       ),
     );
