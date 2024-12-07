@@ -25,7 +25,9 @@ class ItemBottomSheet extends StatelessWidget {
             onPressed: () => onEdited(),
             icon: Icons.edit_outlined,
             label: "Editar"),
-        const SizedBox(height: 10),
+        const Divider(
+          height: 32,
+        ),
         SheetButton(
             color: AppColors.red,
             onPressed: () => onDeleted(),
