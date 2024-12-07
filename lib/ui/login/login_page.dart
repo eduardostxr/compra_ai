@@ -1,4 +1,4 @@
-import 'package:compra/Util/colors_config.dart';
+import 'package:compra/util/colors_config.dart';
 import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/models/response_model.dart';
 import 'package:compra/ui/_common/default_button.dart';
@@ -26,12 +26,12 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> _login() async {
-    // String email = emailController.text.trim();
-    // String password = passwordController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
     // String email =  "eduardo@gmail.com";
     // String password =  "123456";
-    String email =  "pabloescobar12@gmail.com";
-    String password =  "123456";
+    // String email = "pabloescobar12@gmail.com";
+    // String password = "123456";
 
     ResponseModel? response =
         await Provider.of<AuthManager>(context, listen: false)
@@ -39,7 +39,7 @@ class LoginPageState extends State<LoginPage> {
 
     if (!mounted) return;
 
-    if (response != null && response.statusCode == 200) {
+    if (response?.statusCode == 200) {
       SnackBarService.showSuccess("Login realizado com sucesso!");
       Navigator.pushReplacement(
         context,
@@ -104,7 +104,6 @@ class LoginPageState extends State<LoginPage> {
             const SocialBtn(
                 text: "Entrar com o Google",
                 path: "lib/assets/images/google_icon.png"),
-
           ],
         ),
       ),

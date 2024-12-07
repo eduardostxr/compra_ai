@@ -6,11 +6,10 @@ import 'package:compra/models/complete_list_model.dart';
 import 'package:compra/models/item_model.dart';
 import 'package:compra/models/list_model.dart';
 import 'package:compra/ui/home/components/account_bottom_sheet.dart';
-import 'package:compra/ui/home/components/add_list_button.dart';
 import 'package:compra/ui/home/components/item_bottom_sheet.dart';
 import 'package:compra/ui/home/components/list_item.dart';
-import 'package:compra/ui/home/components/list_profile.dart';
 import 'package:compra/ui/new_item/new_item_page.dart';
+import 'package:compra/ui/receipt/receipt_page.dart';
 import 'package:compra/ui/update_item/update_item_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
@@ -209,6 +208,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _redirectToReceiptPage() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const ReceiptPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -265,7 +269,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             GeneralHomeBtn(
                               icon: Icons.camera_alt_outlined,
                               label: "Nota Fiscal",
-                              onPressed: () {},
+                              // Redirecionar para pagina nova ->
+                              // Na pagina adicionar foto q tem no celular ou tirar foto usando a camera e ja anexar -> USAR SOMENTE UMA FOTO
+                              // Chamada pra API enviando a foto e retornando os itens da nota fiscal
+                              // Mantar a pagina e criar outra por cima
+                              onPressed: _redirectToReceiptPage,
                             ),
                             const SizedBox(height: 32),
                             GeneralHomeBtn(
@@ -295,26 +303,25 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onMorePressed: () {
                                         _showItemBottomSheet(
                                           ItemBottomSheet(
-                                            title:
-                                                completeList!.items[index].name,
-                                            onDeleted: () {
-                                              _deleteItem(
-                                                  completeList!.items[index]);
-                                              Navigator.pop(context);
-                                            },
-                                            onEdited: () {
-                                              Navigator.pop(context);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      UpdateItemPage(
-                                                    item: completeList!
-                                                        .items[index],
+                                              title: completeList!
+                                                  .items[index].name,
+                                              onDeleted: () {
+                                                _deleteItem(
+                                                    completeList!.items[index]);
+                                                Navigator.pop(context);
+                                              },
+                                              onEdited: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UpdateItemPage(
+                                                      item: completeList!
+                                                          .items[index],
+                                                    ),
                                                   ),
-                                                ),
-                                              ).then((value) {
-                                               
+                                                ).then((value) {
                                                   setState(() {
                                                     // final index = completeList!
                                                     //     .items
@@ -326,10 +333,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     //       .items[index] = value;
                                                     // }
                                                   });
-                                                
-                                              
-                                              });
-                                      }),
+                                                });
+                                              }),
                                         );
                                       },
                                       onChecked: (bool checked) async {
