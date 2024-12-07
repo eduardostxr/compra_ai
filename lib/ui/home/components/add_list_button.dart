@@ -1,4 +1,4 @@
-import 'package:compra/Util/colors_config.dart';
+import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/_common/dashed_border.dart';
 import 'package:compra/ui/new_list/new_list_page.dart';
 import 'package:flutter/material.dart';

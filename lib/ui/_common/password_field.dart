@@ -1,4 +1,4 @@
-import 'package:compra/Util/colors_config.dart';
+import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
 class PasswordField extends StatefulWidget {
@@ -10,7 +10,7 @@ class PasswordField extends StatefulWidget {
     super.key,
     required this.hint,
     required this.label,
-    required this.controller, 
+    required this.controller,
   });
 
   @override

@@ -9,6 +9,7 @@ import 'package:compra/ui/home/components/list_item.dart';
 import 'package:compra/ui/home/components/list_manager_bottom_sheet.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
 import 'package:compra/ui/new_item/new_item_page.dart';
+import 'package:compra/ui/receipt/receipt_page.dart';
 import 'package:compra/ui/update_item/update_item_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/list_profile_group_header.dart';
@@ -39,6 +40,11 @@ class _MyHomePageState extends State<MyHomePage> {
         return bottomSheetWidget;
       },
     );
+  }
+
+    void _redirectToReceiptPage() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const ReceiptPage()));
   }
 
   @override
@@ -96,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 GeneralHomeBtn(
                   icon: Icons.camera_alt_outlined,
                   label: "Nota Fiscal",
-                  onPressed: () {},
+                        onPressed: _redirectToReceiptPage,
                 ),
                 const SizedBox(height: 32),
                 GeneralHomeBtn(

@@ -1,4 +1,4 @@
-import 'package:compra/Util/colors_config.dart';
+import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
 class InputField extends StatefulWidget {
