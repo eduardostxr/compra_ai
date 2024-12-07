@@ -27,6 +27,22 @@ class ListManager extends ChangeNotifier {
     }
   }
 
+  void createList(String token, String name, String emoji, double? maxSpend) async {
+    ResponseModel? response = await ListService.createList(
+      token: token,
+      name: name,
+      emoji: emoji,
+      maxSpend: maxSpend,
+    );
+
+    if (response != null && response.statusCode == 201) {
+      debugPrint("List successfully created.");
+      getLists(token);
+    } else {
+      debugPrint("Failed to create list. Message: ${response?.message}");
+    }
+  }
+
 
   Future<ResponseModel?> getLists(String token) async {
     ResponseModel? response = await ListService.getLists(token: token);

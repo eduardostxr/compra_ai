@@ -43,7 +43,7 @@ class ListService {
     required String token,
     required String name,
     String? emoji,
-    int? maxSpend,
+    double? maxSpend,
   }) async {
     const String path = '/api/list';
 
