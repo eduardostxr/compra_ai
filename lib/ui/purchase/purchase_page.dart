@@ -37,13 +37,12 @@ class PurchaseItemsPage extends StatelessWidget {
           foregroundColor: AppColors.white,
         ),
         body: ListView.builder(
+          padding: const EdgeInsets.only(bottom: 80.0),
           itemCount: purchase.payload.produtos.length,
           itemBuilder: (context, index) {
             final produto = purchase.payload.produtos[index];
-
             final backgroundColor =
                 index.isEven ? AppColors.offWhite : AppColors.lightGray;
-
             return ListTile(
               tileColor: backgroundColor,
               title: Text(produto.name),
