@@ -15,10 +15,10 @@ class ListProfileGroup extends StatefulWidget {
   final Function(ListModel profile) onProfileTap;
 
   @override
-  State<ListProfileGroup> createState() => _ListProfileGroupState();
+  State<ListProfileGroup> createState() => ListProfileGroupState();
 }
 
-class _ListProfileGroupState extends State<ListProfileGroup> {
+class ListProfileGroupState extends State<ListProfileGroup> {
   int? _selectedIndex;
 
   void _onProfileSelected(int index) {
@@ -27,6 +27,12 @@ class _ListProfileGroupState extends State<ListProfileGroup> {
     });
 
     widget.onProfileTap(widget.profiles[index]);
+  }
+
+  void resetSelection() {
+    setState(() {
+      _selectedIndex = null;
+    });
   }
 
   @override

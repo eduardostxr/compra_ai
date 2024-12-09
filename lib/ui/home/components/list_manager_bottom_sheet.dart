@@ -1,13 +1,18 @@
 import 'package:compra/ui/_common/custom_bottom_sheet.dart';
 import 'package:compra/ui/_common/sheet_button.dart';
-import 'package:compra/ui/start/starting_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
 
 class ListManagerBottomSheet extends StatelessWidget {
   const ListManagerBottomSheet({
     super.key,
+    required this.onDeleted,
+    required this.onEdited,
+    required this.onInvited,
   });
+  final Function onDeleted;
+  final Function onEdited;
+  final Function onInvited;
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +21,14 @@ class ListManagerBottomSheet extends StatelessWidget {
       children: [
         SheetButton(
           color: AppColors.darkGray,
-          onPressed: () => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const StartingPage(),
-            ),
-            (route) => false,
-          ),
+          onPressed: () => onEdited(),
           icon: Icons.edit_outlined,
           label: "Editar lista",
         ),
         const SizedBox(height: 10),
         SheetButton(
           color: AppColors.darkGray,
-          onPressed: () => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const StartingPage(),
-            ),
-            (route) => false,
-          ),
+          onPressed: () => onInvited(),
           icon: Icons.person_add_outlined,
           label: "Convidar amigos",
         ),
@@ -44,13 +37,7 @@ class ListManagerBottomSheet extends StatelessWidget {
         ),
         SheetButton(
           color: AppColors.red,
-          onPressed: () => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const StartingPage(),
-            ),
-            (route) => false,
-          ),
+          onPressed: () => onDeleted(),
           icon: Icons.exit_to_app_outlined,
           label: "Deletar lista",
         ),

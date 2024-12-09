@@ -32,7 +32,7 @@ class UserService {
     } catch (e) {
       ResponseModel responseModel = ResponseModel.fromJson(
         500,
-        "Erro de conexão. Tente novamente.",
+        "Erro do servidor.",
         null,
       );
       debugPrint('Error to get logged user: $e');

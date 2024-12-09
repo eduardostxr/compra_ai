@@ -10,7 +10,7 @@ import 'package:compra/ui/home/components/list_manager_bottom_sheet.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
 import 'package:compra/ui/new_item/new_item_page.dart';
 import 'package:compra/ui/receipt/receipt_page.dart';
-import 'package:compra/ui/update_item/update_item_page.dart';
+import 'package:compra/ui/update_list/update_list_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:compra/ui/home/components/list_profile_group_header.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,86 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final GlobalKey<ListProfileGroupState> listProfileGroupKey = GlobalKey();
+  int inviteCount = 0;
+
   @override
   void initState() {
     super.initState();
+    _fetchInvites();
+  }
+
+  void _fetchInvites() {
+    final authManager = context.read<AuthManager>();
+    context
+        .read<ListManager>()
+        .getInvites(authManager.accessToken)
+        .then((invites) {
+      setState(() {
+        inviteCount = invites.length;
+      });
+    });
+  }
+
+  void _showInvites() {
+    final listManager = context.read<ListManager>();
+
+    _showBottomSheet(
+      listManager.invites.isEmpty
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Você não tem convites pendentes.",
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+              ),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: listManager.invites.length,
+              itemBuilder: (context, index) {
+                final invite = listManager.invites[index];
+                return ListTile(
+                  title: Text(invite.list.name),
+                  subtitle: Text("Convidado por: ${invite.invitedBy.name}"),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        onPressed: () {
+                          listManager
+                              .acceptInvite(
+                            context.read<AuthManager>().accessToken,
+                            invite.id,
+                          )
+                              .then((_) {
+                            _fetchInvites();
+                            Navigator.pop(context);
+                          });
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed: () {
+                          listManager
+                              .declineInvite(
+                            context.read<AuthManager>().accessToken,
+                            invite.id,
+                          )
+                              .then((_) {
+                            _fetchInvites();
+                            Navigator.pop(context);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+    );
   }
 
   void _showBottomSheet(Widget bottomSheetWidget) {
@@ -42,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-    void _redirectToReceiptPage() {
+  void _redirectToReceiptPage() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const ReceiptPage()));
   }
@@ -70,6 +147,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 _showBottomSheet(const AccountBottomSheet());
               },
             ),
+            Badge(
+              label: Text(
+                inviteCount.toString(),
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+              isLabelVisible: inviteCount > 0,
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.white),
+                onPressed: _showInvites,
+              ),
+            ),
           ],
         ),
         backgroundColor: AppColors.offWhite,
@@ -82,10 +172,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {},
                 ),
                 ListProfileGroup(
+                  key: listProfileGroupKey,
                   profiles: context.watch<ListManager>().lists,
                   onProfileTap: (listModel) {
-                    Provider.of<ListManager>(context, listen: false)
-                        .completeList = null;
                     listManager.getListItems(
                         context.read<AuthManager>().accessToken, listModel.id);
                   },
@@ -95,14 +184,49 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: Icons.list_outlined,
                   label: "Gerenciar Lista",
                   onPressed: () {
-                    _showBottomSheet(ListManagerBottomSheet());
+                    _showBottomSheet(
+                      ListManagerBottomSheet(
+                        onDeleted: () {
+                          listManager.deleteList(
+                            authManager.accessToken,
+                            listManager.completeList!.id,
+                          );
+                          listProfileGroupKey.currentState?.resetSelection();
+
+                          context.read<ListManager>().completeList = null;
+                          context.read<ListManager>().lists;
+                        },
+                        onEdited: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return UpdateListPage(
+                                  list:
+                                      context.read<ListManager>().completeList!,
+                                );
+                              },
+                            ),
+                          ).then(
+                            (_) {
+                              if (context.mounted) {
+                                listManager.getLists(
+                                  context.read<AuthManager>().accessToken,
+                                );
+                              }
+                            },
+                          );
+                        },
+                        onInvited: () {},
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 8),
                 GeneralHomeBtn(
                   icon: Icons.camera_alt_outlined,
                   label: "Nota Fiscal",
-                        onPressed: _redirectToReceiptPage,
+                  onPressed: _redirectToReceiptPage,
                 ),
                 const SizedBox(height: 32),
                 GeneralHomeBtn(
@@ -187,17 +311,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return UpdateItemPage(
-                                          item: context
+                                        return UpdateListPage(
+                                          list: context
                                               .read<ListManager>()
-                                              .completeList!
-                                              .items[index],
+                                              .completeList!,
                                         );
                                       },
                                     ),
                                   ).then((_) {
                                     if (context.mounted) {
-                                      Navigator.pop(context);
+                                      listManager.getLists(
+                                        context.read<AuthManager>().accessToken,
+                                      );
                                     }
                                   });
                                 },

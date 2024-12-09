@@ -77,6 +77,7 @@ class WebService {
         headers: headers,
         body: jsonEncode(body),
       );
+      debugPrint("Response: ${response.body}");
 
       return response;
     } catch (e) {
