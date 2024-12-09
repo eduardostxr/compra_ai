@@ -1,5 +1,7 @@
+import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/manager/list_manager.dart';
 import 'package:compra/models/purchase.dart';
+import 'package:compra/models/response_model.dart';
 import 'package:compra/ui/_common/custom_bottom_sheet.dart';
 import 'package:compra/ui/_common/sheet_button.dart';
 import 'package:compra/ui/home/home_page.dart';
@@ -83,10 +85,14 @@ class PurchaseItemsPage extends StatelessWidget {
               child: const Icon(Icons.check),
               backgroundColor: Colors.blue,
               foregroundColor: AppColors.darkGray,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Itens confirmados!')),
-                );
+              onTap: () async {
+                ResponseModel? retorno = await listManager.finishList(
+                    context.read<AuthManager>().accessToken,
+                    listManager.completeList!.id,
+                    purchase);
+                if (retorno!.statusCode == 200) {
+                  Navigator.pop(context);
+                }
               },
             ),
             SpeedDialChild(

@@ -17,7 +17,6 @@ class ListManager extends ChangeNotifier {
   List<InviteModel> invites = [];
   Purchase? purchase;
 
-
   void addPurchaseProduct(Product product) {
     purchase!.payload.produtos.add(product);
     notifyListeners();
@@ -64,8 +63,24 @@ class ListManager extends ChangeNotifier {
     }
   }
 
-  Future<ResponseModel?> finishList(String token, int listId, Purchase purchase) async {
-    ResponseModel? response = await ListService.finishList(token, listId, purchase);
+  Future<ResponseModel?> finishList(
+      String token, int listId, Purchase purchase) async {
+    final requestBody = {
+      "listTotalPrice": purchase.payload.listTotalPrice,
+      "purchaseDate": purchase.payload.purchaseDate,
+      "receiptItems": purchase.payload.produtos.map((product) {
+        return {
+          "name": product.name,
+          "quantity": product.quantity,
+          "price": product.price,
+          "unitPrice": product.unitPrice,
+          "measurementUnit": product.measurementUnit,
+        };
+      }).toList(),
+    };
+
+    ResponseModel? response =
+        await ListService.finishList(token, listId, requestBody);
 
     if (response != null && response.statusCode == 200) {
       debugPrint("List successfully finished.");
@@ -75,49 +90,6 @@ class ListManager extends ChangeNotifier {
     }
 
     return response;
-  }
-
-  Future<ResponseModel?> uploadReceipt({
-    required String token,
-    required int receiptId,
-    required File image,
-  }) async {
-    const String path = '/api/receipt/upload';
-
-    try {
-      final bytes = await image.readAsBytes();
-      final base64Image = base64Encode(bytes);
-      final response = await WebService.post(
-        path,
-        {
-          'receiptId': receiptId,
-          'imageBase64': base64Image,
-        },
-        token,
-      );
-      if (response.statusCode == 200) {
-        debugPrint("Receipt uploaded successfully: ${response.body}");
-        return ResponseModel.fromJson(
-          response.statusCode,
-          "Receipt uploaded successfully!",
-          Purchase.fromJson(jsonDecode(response.body)),
-        );
-      } else {
-        debugPrint("Failed to upload receipt: ${response.statusCode}");
-        return ResponseModel.fromJson(
-          response.statusCode,
-          "Failed to upload receipt",
-          jsonDecode(response.body),
-        );
-      }
-    } catch (e) {
-      debugPrint("Error uploading receipt: $e");
-      return ResponseModel(
-        statusCode: 500,
-        message: "Error uploading receipt. Please try again.",
-        value: null,
-      );
-    }
   }
 
   void createList(
