@@ -24,14 +24,14 @@ class ItemModel {
   factory ItemModel.fromJson(Map<String, dynamic> json) {
     return ItemModel(
       id: json["id"],
-      createdAt: json["createdAt"] ?? "",  // Garantir que 'createdAt' nunca será null
-      updatedAt: json["updatedAt"],        // Aceita null
-      deletedAt: json["deletedAt"],        // Aceita null
-      name: json["name"] ?? "",            // Garantir que 'name' nunca será null
-      description: json["description"] ?? "", // Garantir que 'description' nunca será null
-      price: json["price"] != null ? (json["price"] as num).toDouble() : 0.0,  // Valor padrão de 0.0
-      quantity: int.tryParse(json["quantity"].toString()) ?? 0,  // Garantir que 'quantity' é um número válido
-      checked: json["checked"] ?? false,   // Garantir que 'checked' seja booleano (false por padrão)
+      createdAt: json["createdAt"] ?? "",
+      updatedAt: json["updatedAt"],  
+      deletedAt: json["deletedAt"],    
+      name: json["name"] ?? "",
+      description: json["description"] ?? "",
+      price: json["price"] != null ? (json["price"] as num).toDouble() : 0.0, 
+      quantity: int.tryParse(json["quantity"].toString()) ?? 0,  
+      checked: json["checked"] ?? false,  
     );
   }
 

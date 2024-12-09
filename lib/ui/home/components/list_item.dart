@@ -47,7 +47,7 @@ class ListItem extends StatelessWidget {
               ),
             ),
           ),
-          item.description != null
+          item.description != null && item.description!.isNotEmpty
               ? IconButton(
                   icon: const Icon(Icons.info_outline),
                   onPressed: onInfoPressed,
