@@ -1,9 +1,45 @@
+import 'package:compra/models/purchase.dart';
 import 'package:compra/models/response_model.dart';
 import 'dart:convert';
 import '../web_service.dart';
 import 'package:flutter/material.dart';
 
 class ListService {
+
+  static Future<ResponseModel?> finishList(String token, int listId, Purchase purchase) {
+    final String path = '/api/list/finish/$listId';
+
+    try {
+      return WebService.post(path, purchase.payload, token).then((response) {
+        if (response.statusCode == 200) {
+          ResponseModel responseModel = ResponseModel.fromJson(
+            response.statusCode,
+            "Lista finalizada com sucesso!",
+            jsonDecode(response.body),
+          );
+          debugPrint('List finished successfully: ${response.statusCode}');
+          return responseModel;
+        } else {
+          ResponseModel responseModel = ResponseModel.fromJson(
+            response.statusCode,
+            "Falha ao finalizar lista",
+            jsonDecode(response.body),
+          );
+          debugPrint('Failed to finish list: ${response.statusCode}');
+          return responseModel;
+        }
+      });
+    } catch (e) {
+      ResponseModel responseModel = ResponseModel.fromJson(
+        500,
+        "Erro de conexão. Tente novamente.",
+        null,
+      );
+      debugPrint('Error during list finishing: $e');
+      return Future.value(responseModel);
+    }
+  }
+
   static Future<ResponseModel?> acceptInvite(String token, int inviteId) {
     String path = '/api/invite/accept';
 

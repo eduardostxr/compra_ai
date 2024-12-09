@@ -17,6 +17,7 @@ class ListManager extends ChangeNotifier {
   List<InviteModel> invites = [];
   Purchase? purchase;
 
+
   void addPurchaseProduct(Product product) {
     purchase!.payload.produtos.add(product);
     notifyListeners();
@@ -63,7 +64,20 @@ class ListManager extends ChangeNotifier {
     }
   }
 
-Future<ResponseModel?> uploadReceipt({
+  Future<ResponseModel?> finishList(String token, int listId, Purchase purchase) async {
+    ResponseModel? response = await ListService.finishList(token, listId, purchase);
+
+    if (response != null && response.statusCode == 200) {
+      debugPrint("List successfully finished.");
+      getLists(token);
+    } else {
+      debugPrint("Failed to finish list. Message: ${response?.message}");
+    }
+
+    return response;
+  }
+
+  Future<ResponseModel?> uploadReceipt({
     required String token,
     required int receiptId,
     required File image,
@@ -166,39 +180,39 @@ Future<ResponseModel?> uploadReceipt({
     return response;
   }
 
-Future<ResponseModel?> updateList(
-  String token,
-  int listId,
-  String name,
-  String emoji,
-  double? maxSpend,
-) async {
-  try {
-    final response = await ListService.updateList(
-      token: token,
-      listId: listId,
-      name: name,
-      emoji: emoji,
-      maxSpend: maxSpend,
-    );
+  Future<ResponseModel?> updateList(
+    String token,
+    int listId,
+    String name,
+    String emoji,
+    double? maxSpend,
+  ) async {
+    try {
+      final response = await ListService.updateList(
+        token: token,
+        listId: listId,
+        name: name,
+        emoji: emoji,
+        maxSpend: maxSpend,
+      );
 
-    if (response?.statusCode == 201) {
-      debugPrint("List successfully updated: ${response?.message}");
-    } else {
-      debugPrint("Failed to update list. Message: ${response?.message ?? "Unknown error"}");
+      if (response?.statusCode == 201) {
+        debugPrint("List successfully updated: ${response?.message}");
+      } else {
+        debugPrint(
+            "Failed to update list. Message: ${response?.message ?? "Unknown error"}");
+      }
+
+      return response;
+    } catch (e) {
+      debugPrint("Error while updating list: $e");
+      return ResponseModel(
+        statusCode: 500,
+        message: "Erro ao atualizar a lista. Tente novamente.",
+        value: null,
+      );
     }
-
-    return response;
-  } catch (e) {
-    debugPrint("Error while updating list: $e");
-    return ResponseModel(
-      statusCode: 500,
-      message: "Erro ao atualizar a lista. Tente novamente.",
-      value: null,
-    );
   }
-}
-
 
   Future<List<InviteModel>> getInvites(String token) async {
     ResponseModel? response = await ListService.getInvites(token);

@@ -30,7 +30,7 @@ class LoginPageState extends State<LoginPage> {
     // String password = passwordController.text.trim();
     // String email =  "eduardo@gmail.com";
     // String password =  "123456";
-    String email = "pabloescobar11@gmail.com";
+    String email = "pabloescobar12@gmail.com";
     String password = "123456";
 
     ResponseModel? response =

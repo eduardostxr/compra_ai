@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/manager/list_manager.dart';
 import 'package:compra/models/purchase.dart';
+import 'package:compra/ui/_common/default_button.dart';
 import 'package:compra/ui/purchase/purchase_page.dart';
 import 'package:compra/util/colors_config.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
     final fileStream = http.ByteStream(_image!.openRead());
     final length = await _image!.length();
-    print(_image!.length());
     request.files.add(
       http.MultipartFile(
         'receipt',
@@ -71,26 +71,17 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
       if (response.statusCode == 200) {
         purchase = Purchase.fromJson(jsonDecode(responseBody));
-        print(purchase?.userId ?? 'veio nada');
-        print(purchase?.payload.produtos[0].name ?? 'veio nada');
         Provider.of<ListManager>(context, listen: false).setPurchase(purchase!);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const PurchaseItemsPage()),
         );
-
-        print('Image uploaded successfully');
-        print('Response: $responseBody');
-      } else {
-        print('Image upload failed');
-        print('Response: $responseBody');
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      print('Error: $e');
     }
   }
 
@@ -100,12 +91,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.orange,
-          title: Row(
+          foregroundColor: AppColors.white,
+          title: const Row(
             children: [
               Text(
-                "Olá, $userName!",
+                "Nota Fiscal",
                 textAlign: TextAlign.left,
-                style: const TextStyle(color: AppColors.white),
+                style: TextStyle(color: AppColors.white),
               ),
             ],
           ),
@@ -114,17 +106,31 @@ class _ReceiptPageState extends State<ReceiptPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _image == null
-                  ? const Text('No image selected.')
-                  : Image.file(File(_image!.path)),
               const SizedBox(height: 20),
-              ElevatedButton(
+              _image == null
+                  ? const SizedBox(
+                      height: 350,
+                      child: Center(
+                        child: Text('Nenhuma imagem selecionada.'),
+                      ),
+                    )
+                  : SizedBox(
+                      height: 350,
+                      child: Image.file(
+                        File(_image!.path),
+                      ),
+                    ),
+              const SizedBox(height: 20),
+              DefaultButton(
                 onPressed: () => _pickImage(ImageSource.camera),
-                child: const Text('Tirar foto'),
+                label: 'Tirar foto',
+                color: AppColors.darkGreen,
               ),
-              ElevatedButton(
+              const SizedBox(height: 20),
+              DefaultButton(
                 onPressed: () => _pickImage(ImageSource.gallery),
-                child: const Text('Selecionar da galeria'),
+                label: 'Selecionar da galeria',
+                color: AppColors.darkGreen,
               ),
               const SizedBox(height: 20),
               if (_isLoading)
@@ -136,22 +142,12 @@ class _ReceiptPageState extends State<ReceiptPage> {
                   ],
                 ),
               if (!_isLoading)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Voltar'),
-                    ),
-                    ElevatedButton(
-                      onPressed: _isImageSelected
-                          ? () => _sendImage(authProvider.accessToken)
-                          : null,
-                      child: const Text('Enviar Foto'),
-                    ),
-                  ],
+                DefaultButton(
+                  onPressed: _isImageSelected
+                      ? () => _sendImage(authProvider.accessToken)
+                      : () {},
+                  label: 'Enviar Foto',
+                  color: AppColors.darkGreen,
                 ),
               const SizedBox(height: 20),
             ],
