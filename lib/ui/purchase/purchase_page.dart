@@ -17,6 +17,78 @@ class PurchaseItemsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final purchase = Provider.of<ListManager>(context).purchase;
 
+    void showConfirmFinishDialog(
+        BuildContext context, ListManager listManager) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirmar Finalização'),
+            content: const Text(
+                'Você tem certeza que deseja finalizar a lista? Após essa ação, a lista não poderá mais ser editada.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fechar o diálogo
+                },
+                child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  // Realiza a finalização da lista
+                  ResponseModel? retorno = await listManager.finishList(
+                    context.read<AuthManager>().accessToken,
+                    listManager.completeList!.id,
+                    listManager.purchase!,
+                  );
+                  if (retorno!.statusCode >= 200 && retorno.statusCode < 300) {
+                    await listManager.getListItems(
+                        context.read<AuthManager>().accessToken,
+                        listManager.completeList!.id);
+                    if (retorno.statusCode >= 200 && retorno.statusCode < 300) {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    }
+                  }
+                },
+                child: const Text('Confirmar'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    void _showCancelConfirmationDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirmar Cancelamento'),
+            content: const Text(
+                'Você tem certeza que deseja cancelar? Todas as alterações serão perdidas.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                },
+                child: const Text('Não'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: const Text('Sim, Cancelar'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     if (purchase == null) {
       return Scaffold(
         appBar: AppBar(
@@ -48,7 +120,7 @@ class PurchaseItemsPage extends StatelessWidget {
             return ListTile(
               tileColor: backgroundColor,
               title: Text(produto.name),
-              subtitle: Text('Preço: R\$ ${produto.price}'),
+              subtitle: Text('Preço: R\$ ${produto.price.toStringAsFixed(2)}'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -70,6 +142,7 @@ class PurchaseItemsPage extends StatelessWidget {
           foregroundColor: AppColors.mediumGray,
           icon: Icons.add,
           activeIcon: Icons.close,
+          spacing: 20,
           children: [
             SpeedDialChild(
               label: 'Adicionar',
@@ -85,33 +158,14 @@ class PurchaseItemsPage extends StatelessWidget {
               child: const Icon(Icons.check),
               backgroundColor: Colors.blue,
               foregroundColor: AppColors.darkGray,
-              onTap: () async {
-                ResponseModel? retorno = await listManager.finishList(
-                    context.read<AuthManager>().accessToken,
-                    listManager.completeList!.id,
-                    purchase);
-                if (retorno!.statusCode >= 200 && retorno.statusCode < 300) {
-                  await listManager.getListItems(
-                      context.read<AuthManager>().accessToken,
-                      listManager.completeList!.id);
-                  if (retorno.statusCode >= 200 && retorno.statusCode < 300) {
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                  }
-                }
-              },
+              onTap: () => showConfirmFinishDialog(context, listManager),
             ),
             SpeedDialChild(
               label: 'Cancelar',
               child: const Icon(Icons.cancel),
               backgroundColor: Colors.red,
               foregroundColor: AppColors.darkGray,
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage()),
-                  (Route<dynamic> route) => false,
-                );
-              },
+              onTap: () => _showCancelConfirmationDialog(context),
             ),
           ],
         ),
@@ -141,7 +195,7 @@ class PurchaseItemsPage extends StatelessWidget {
             height: 32,
           ),
           SheetButton(
-            icon: Icons.delete_forever_outlined,
+            icon: Icons.delete_outline,
             color: Colors.red,
             label: "Deletar Item",
             onPressed: () {

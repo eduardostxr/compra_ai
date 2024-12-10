@@ -43,7 +43,7 @@ class ItemService {
 
   static Future<ResponseModel?> createItem({
     required String name,
-    required double quantity,
+    double? quantity,
     double? price,
     String? description,
     required String token,
@@ -53,6 +53,7 @@ class ItemService {
 
     final Map<String, dynamic> data = {
       "name": name,
+      if (quantity != null)
       "quantity": quantity,
       if (price != null)
       "price": price,

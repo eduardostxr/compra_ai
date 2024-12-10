@@ -43,7 +43,7 @@ class EmojiInputFieldState extends State<EmojiInputField> {
               controller: widget.controller,
               decoration: InputDecoration(
                 hintText: widget.hint,
-                hintStyle: const TextStyle(color: AppColors.mediumGray),
+                hintStyle: const TextStyle(color: AppColors.gray),
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: AppColors.darkGreen, width: 2),
                   borderRadius: BorderRadius.circular(8),
@@ -56,7 +56,7 @@ class EmojiInputFieldState extends State<EmojiInputField> {
                 suffixIcon: GestureDetector(
                   onTap: widget.onEmojiPressed, 
                   child: selectedEmoji == null
-                      ? const Icon(Icons.emoji_emotions_outlined)
+                      ? const Icon(Icons.emoji_emotions_outlined, size: 30,)
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(

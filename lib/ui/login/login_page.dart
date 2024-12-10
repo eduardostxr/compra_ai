@@ -26,12 +26,12 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> _login() async {
-    // String email = emailController.text.trim();
-    // String password = passwordController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
     // String email =  "eduardo@gmail.com";
     // String password =  "123456";
-    String email = "pabloescobar12@gmail.com";
-    String password = "123456";
+    // String email = "pabloescobar12@gmail.com";
+    // String password = "123456";
 
     ResponseModel? response =
         await Provider.of<AuthManager>(context, listen: false)

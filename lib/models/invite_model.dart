@@ -48,21 +48,6 @@ class InviteModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
-      'deletedAt': deletedAt?.toIso8601String(),
-      'telephone': telephone,
-      'email': email,
-      'listId': listId,
-      'invitedById': invitedById,
-      'userId': userId,
-      'status': status,
-      'list': list.toJson(),
-      'invitedBy': invitedBy.toJson(),
-    };
-  }
+
 }
 

@@ -1,6 +1,8 @@
 import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/manager/list_manager.dart';
 import 'package:compra/models/complete_list_model.dart';
+import 'package:compra/models/list_model.dart';
+import 'package:compra/models/response_model.dart';
 import 'package:compra/ui/_common/default_button.dart';
 import 'package:compra/ui/_common/input_field.dart';
 import 'package:compra/ui/new_list/components/emoji_input_field.dart';
@@ -27,11 +29,13 @@ class _UpdateListPageState extends State<UpdateListPage> {
   void initState() {
     super.initState();
     nameController.text = widget.list.name;
-    maxSpendController.text = widget.list.maxSpend.toString();
+maxSpendController.text = widget.list.maxSpend?.toString() ?? '';
     Future.delayed(Duration.zero, () {
       emojiFieldKey.currentState?.updateEmoji(widget.list.emoji);
     });
   }
+
+
 
   void _showEmojiPicker() {
     showModalBottomSheet(
@@ -76,8 +80,8 @@ class _UpdateListPageState extends State<UpdateListPage> {
               DefaultButton(
                 color: AppColors.darkGreen,
                 label: "Editar Lista",
-                onPressed: () {
-                  listManager.updateList(
+                onPressed: () async {
+                  ResponseModel? retorno = await listManager.updateList(
                     context.read<AuthManager>().accessToken,
                     widget.list.id,
                     nameController.text,
@@ -86,7 +90,27 @@ class _UpdateListPageState extends State<UpdateListPage> {
                         ? double.tryParse(maxSpendController.text)
                         : null,
                   );
-                  Navigator.pop(context);
+
+                  if (retorno != null && retorno.statusCode == 201) {
+                    listManager.updateMyList(ListModel(
+                      id: widget.list.id,
+                      name: nameController.text,
+                      emoji: emojiFieldKey.currentState?.selectedEmoji ?? '',
+                      maxSpend: maxSpendController.text.isNotEmpty
+                          ? double.tryParse(maxSpendController.text)
+                          : null,
+                    ));
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  } else {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Falha ao atualizar a lista.')),
+                      );
+                    }
+                  }
                 },
               ),
             ],

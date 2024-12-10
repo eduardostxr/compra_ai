@@ -3,29 +3,29 @@ import 'package:compra/models/item_model.dart'; // Ensure you import the ItemMod
 
 class ListModel {
   final int id;
-  final String createdAt;
-  final String updatedAt;
-  final String deletedAt;
-  final String name;
-  final String emoji;
-  final double? totalPrice;
-  final double? maxSpend;
-  final int ownerId;
-  final List<UserModel> userLists;
-  List<ItemModel> items; // Add this line for the 'items' property
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+  String name;
+  String emoji;
+  double? totalPrice;
+  double? maxSpend;
+  int? ownerId;
+  List<UserModel>? userLists;
+  List<ItemModel>? items; 
 
   ListModel({
     required this.id,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.deletedAt,
+     this.createdAt,
+     this.updatedAt,
+     this.deletedAt,
     required this.name,
     required this.emoji,
-    required this.totalPrice,
-    required this.maxSpend,
-    required this.ownerId,
-    required this.userLists,
-    required this.items, // Include this in the constructor
+    this.totalPrice,
+    this.maxSpend,
+    this.ownerId,
+    this.userLists,
+    this.items,
   });
 
   factory ListModel.fromJson(Map<String, dynamic> json) {
@@ -56,13 +56,4 @@ class ListModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    final data = {
-      "name": name,
-      "emoji": emoji,
-      "maxSpend": maxSpend,
-      "items": items.map((item) => item.toJson()), 
-    };
-    return data;
-  }
 }

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:compra/models/complete_list_model.dart';
 import 'package:compra/models/invite_model.dart';
 import 'package:compra/models/item_model.dart';
@@ -13,6 +15,28 @@ class ListManager extends ChangeNotifier {
   List<InviteModel> invites = [];
   Purchase? purchase;
 
+  UnmodifiableListView<ListModel> get allLists => UnmodifiableListView(lists);
+
+  UnmodifiableListView<InviteModel> get allInvites =>
+      UnmodifiableListView(invites);
+
+  UnmodifiableListView<ItemModel> get allItems => UnmodifiableListView(
+        completeList?.items ?? [],
+      );
+
+  void addNewItem(ItemModel item) {
+    completeList!.items.add(item);
+    notifyListeners();
+  }
+
+  void updateItem(ItemModel item) {
+    final index = completeList!.items.indexWhere((i) => i.id == item.id);
+    if (index != -1) {
+      completeList!.items[index] = item;
+      notifyListeners();
+    }
+  }
+
   void addPurchaseProduct(Product product) {
     purchase!.payload.produtos.add(product);
     notifyListeners();
@@ -21,6 +45,14 @@ class ListManager extends ChangeNotifier {
   void removePurchaseProduct(Product product) {
     purchase!.payload.produtos.remove(product);
     notifyListeners();
+  }
+
+  void updateMyList(ListModel list) {
+    final index = lists.indexWhere((l) => l.id == list.id);
+    if (index != -1) {
+      lists[index] = list;
+      notifyListeners();
+    }
   }
 
   void updatePurchaseProduct(Product product, int index) {
@@ -32,6 +64,11 @@ class ListManager extends ChangeNotifier {
 
   void removeFromList(ItemModel item) {
     completeList!.items.remove(item);
+    notifyListeners();
+  }
+
+  void addToList(ItemModel item) {
+    completeList!.items.add(item);
     notifyListeners();
   }
 
@@ -140,7 +177,7 @@ class ListManager extends ChangeNotifier {
       List<ListModel> data = (response.value as List)
           .map((item) => ListModel.fromJson(item as Map<String, dynamic>))
           .toList();
-      setLists(data); // Atualiza a lista e notifica a UI
+      setLists(data);
       debugPrint("Lists successfully fetched and updated.");
     } else {
       debugPrint("Failed to fetch lists. Message: ${response?.message}");
@@ -178,8 +215,13 @@ class ListManager extends ChangeNotifier {
         maxSpend: maxSpend,
       );
 
-      if (response?.statusCode == 201) {
-        debugPrint("List successfully updated: ${response?.message}");
+      if (response != null &&
+          response.statusCode >= 201 &&
+          response.statusCode < 300) {
+        response.message = "Lista atualizada com sucesso!";
+        response.statusCode = 201;
+        response.value = null;
+        debugPrint("List successfully updated: ${response.message}");
       } else {
         debugPrint(
             "Failed to update list. Message: ${response?.message ?? "Unknown error"}");

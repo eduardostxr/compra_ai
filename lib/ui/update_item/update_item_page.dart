@@ -27,14 +27,9 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
 
   void _validateInputs() {
     final String name = nameController.text.trim();
-    final double? quantity = double.tryParse(quantityController.text);
-    final double? price = priceController.text.isNotEmpty
-        ? double.tryParse(priceController.text)
-        : 0;
 
     setState(() {
-      _isButtonEnabled =
-          name.isNotEmpty && quantity != null && quantity > 0 && (price != null || priceController.text.isEmpty);
+      _isButtonEnabled = name.isNotEmpty;
     });
   }
 
@@ -48,7 +43,7 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
       text: widget.item.quantity.toString(),
     );
     priceController = TextEditingController(
-      text: widget.item.price != null ? widget.item.price.toString() : "",
+      text: widget.item.price.toString(),
     );
     descriptionController = TextEditingController(
       text: widget.item.description?.isNotEmpty == true
@@ -57,8 +52,6 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
     );
 
     nameController.addListener(_validateInputs);
-    quantityController.addListener(_validateInputs);
-    priceController.addListener(_validateInputs);
   }
 
   @override
@@ -86,25 +79,13 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
                 const SizedBox(height: 8),
                 const GenericPageHeader(
                   title: "",
-                  subtitle: "Dê um nome para o item e o restante é opcional.",
+                  subtitle: "Dê um nome para o item e a observação é opcional.",
                 ),
                 const SizedBox(height: 16),
                 InputField(
                   hint: "Ex: Banana",
                   label: "Item",
                   controller: nameController,
-                ),
-                InputField(
-                  hint: "Ex: 5",
-                  label: "Quantidade",
-                  controller: quantityController,
-                  keyboardType: TextInputType.number,
-                ),
-                InputField(
-                  hint: "Ex: 50.50",
-                  label: "Preço",
-                  controller: priceController,
-                  keyboardType: TextInputType.number,
                 ),
                 InputField(
                   hint: "Ex: A marca tal",
@@ -118,19 +99,29 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
                       ? AppColors.darkGreen
                       : AppColors.mediumGray,
                   label: "Editar",
-                  onPressed:() {
-                    itemManager.updateItem(
+                  onPressed: () async {
+                    final response = await itemManager.updateItem(
                       itemId: widget.item.id,
                       name: nameController.text,
-                      quantity: double.parse(quantityController.text),
+                      quantity: double.tryParse(quantityController.text) ?? 0,
                       price: priceController.text.isNotEmpty
-                          ? double.parse(priceController.text)
+                          ? double.tryParse(priceController.text)
                           : null,
                       description: descriptionController.text,
                       token: authManager.accessToken,
-                      listManager: listManager
                     );
-                    Navigator.pop(context);
+
+                    if (response != null &&
+                        response.statusCode >= 200 &&
+                        response.statusCode < 300) {
+                      await listManager.getListItems(authManager.accessToken,
+                          listManager.completeList!.id);
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Falha ao atualizar o item.')),
+                      );
+                    }
                   },
                 ),
               ],
