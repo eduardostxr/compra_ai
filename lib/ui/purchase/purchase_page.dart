@@ -58,7 +58,7 @@ class PurchaseItemsPage extends StatelessWidget {
       );
     }
 
-    void _showCancelConfirmationDialog(BuildContext context) {
+    void showCancelConfirmationDialog(BuildContext context) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -165,7 +165,7 @@ class PurchaseItemsPage extends StatelessWidget {
               child: const Icon(Icons.cancel),
               backgroundColor: Colors.red,
               foregroundColor: AppColors.darkGray,
-              onTap: () => _showCancelConfirmationDialog(context),
+              onTap: () => showCancelConfirmationDialog(context),
             ),
           ],
         ),

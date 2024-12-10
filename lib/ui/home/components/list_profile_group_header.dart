@@ -16,6 +16,7 @@ class _ListProfileGroupHeaderState extends State<ListProfileGroupHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: AppColors.offWhite,
       width: double.infinity,
       margin: const EdgeInsetsDirectional.fromSTEB(
         16,
