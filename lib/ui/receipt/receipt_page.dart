@@ -72,7 +72,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
       if (response.statusCode == 200) {
         purchase = Purchase.fromJson(jsonDecode(responseBody));
         Provider.of<ListManager>(context, listen: false).setPurchase(purchase!);
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const PurchaseItemsPage()),

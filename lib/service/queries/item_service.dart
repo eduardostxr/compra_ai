@@ -13,7 +13,7 @@ class ItemService {
     try {
       final response = await WebService.patch(path, null, token);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
           "Item checked com sucesso!",
@@ -24,7 +24,7 @@ class ItemService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao check item",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
         debugPrint('Failed to check item: ${response.statusCode}');
@@ -33,7 +33,7 @@ class ItemService {
     } catch (e) {
       ResponseModel responseModel = ResponseModel.fromJson(
         500,
-        "Erro de conexão. Tente novamente.",
+        "Erro não esperado. Tente novamente.",
         null,
       );
       debugPrint('Error during item check: $e');
@@ -56,13 +56,12 @@ class ItemService {
       "quantity": quantity,
       "price": price,
       "description": description,
-    }..removeWhere(
-        (key, value) => value == null || (value is String && value.isEmpty));
+    };
 
     try {
       final response = await WebService.post(path, data, token);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
           "Item criado com sucesso!",
@@ -73,16 +72,17 @@ class ItemService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao criar item",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
-        debugPrint('Failed to create item: ${response.statusCode}');
+        debugPrint(
+            'Failed to create item: ${responseModel.statusCode} - ${responseModel.message}');
         return responseModel;
       }
     } catch (e) {
       ResponseModel responseModel = ResponseModel.fromJson(
         500,
-        "Erro de conexão. Tente novamente.",
+        "Erro inesperado. Tente novamente.",
         null,
       );
       debugPrint('Error during item creation: $e');
@@ -90,55 +90,53 @@ class ItemService {
     }
   }
 
-static Future<ResponseModel?> updateItem({
-  required String name,
-  required double quantity,
-  double? price,
-  String? description,
-  required String token,
-  required int itemId,
-}) async {
-  final String path = '/api/item/$itemId';
+  static Future<ResponseModel?> updateItem({
+    required String name,
+    required double quantity,
+    double? price,
+    String? description,
+    required String token,
+    required int itemId,
+  }) async {
+    final String path = '/api/item/$itemId';
 
-  final Map<String, dynamic> data = {
-    "name": name,
-    "quantity": quantity,
-    "price": price,
-    "description": description,
-  }..removeWhere(
-      (key, value) => value == null || (value is String && value.isEmpty));
+    final Map<String, dynamic> data = {
+      "name": name,
+      "quantity": quantity,
+      "price": price,
+      "description": description,
+    };
 
-  try {
-    final response = await WebService.put(path, data, token);
+    try {
+      final response = await WebService.put(path, data, token);
 
-    if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        ResponseModel responseModel = ResponseModel.fromJson(
+          response.statusCode,
+          "Item atualizado com sucesso!",
+          jsonDecode(response.body),
+        );
+        debugPrint('Item updated successfully: ${response.statusCode}');
+        return responseModel;
+      } else {
+        ResponseModel responseModel = ResponseModel.fromJson(
+          response.statusCode,
+          jsonDecode(response.body)["error"],
+          jsonDecode(response.body),
+        );
+        debugPrint('Failed to update item: ${response.statusCode}');
+        return responseModel;
+      }
+    } catch (e) {
       ResponseModel responseModel = ResponseModel.fromJson(
-        response.statusCode,
-        "Item atualizado com sucesso!",
-        jsonDecode(response.body),
+        500,
+        "Erro inesperado. Tente novamente.",
+        null,
       );
-      debugPrint('Item updated successfully: ${response.statusCode}');
-      return responseModel;
-    } else {
-      ResponseModel responseModel = ResponseModel.fromJson(
-        response.statusCode,
-        "Falha ao atualizar item",
-        jsonDecode(response.body),
-      );
-      debugPrint('Failed to update item: ${response.statusCode}');
+      debugPrint('Error during item update: $e');
       return responseModel;
     }
-  } catch (e) {
-    ResponseModel responseModel = ResponseModel.fromJson(
-      500,
-      "Erro de conexão. Tente novamente.",
-      null,
-    );
-    debugPrint('Error during item update: $e');
-    return responseModel;
   }
-}
-
 
   static Future<ResponseModel?> deleteItem({
     required String token,
@@ -149,7 +147,7 @@ static Future<ResponseModel?> updateItem({
     try {
       final response = await WebService.delete(path, token);
 
-      if (response.statusCode == 204) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return ResponseModel.fromJson(
           response.statusCode,
           "Item deleted successfully!",
@@ -161,7 +159,7 @@ static Future<ResponseModel?> updateItem({
             : "Unexpected error during deletion.";
         return ResponseModel.fromJson(
           response.statusCode,
-          "Failed to delete the item",
+          jsonDecode(response.body)["error"],
           message,
         );
       }
@@ -169,7 +167,7 @@ static Future<ResponseModel?> updateItem({
       debugPrint('Error during item deletion: $e');
       return ResponseModel.fromJson(
         500,
-        "Connection error. Please try again.",
+        "Erro inesperado. Tente novamente.",
         null,
       );
     }

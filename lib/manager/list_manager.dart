@@ -1,13 +1,9 @@
-import 'dart:io';
-import 'dart:convert';
-
 import 'package:compra/models/complete_list_model.dart';
 import 'package:compra/models/invite_model.dart';
 import 'package:compra/models/item_model.dart';
 import 'package:compra/models/list_model.dart';
 import 'package:compra/models/purchase.dart';
 import 'package:compra/service/queries/list_service.dart';
-import 'package:compra/service/web_service.dart';
 import 'package:flutter/material.dart';
 import '../models/response_model.dart';
 
@@ -143,7 +139,7 @@ class ListManager extends ChangeNotifier {
         await ListService.getListItems(token: token, listId: listId);
     if (response != null && response.statusCode == 200) {
       CompleteListModel data =
-          CompleteListModel.fromJson(response.value as Map<String, dynamic>);
+          CompleteListModel.fromJson(response.value);
       setCompleteList(data);
       debugPrint("List items successfully fetched and updated.");
     } else {

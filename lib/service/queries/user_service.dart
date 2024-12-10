@@ -12,7 +12,7 @@ class UserService {
     try {
       final response = await WebService.get(path, token);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
           "Usuário recuperado com sucesso!",
@@ -23,7 +23,7 @@ class UserService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha buscar Usuário",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
         debugPrint('Failed to retrieve user: ${response.statusCode}');

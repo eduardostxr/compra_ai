@@ -4,13 +4,13 @@ import '../web_service.dart';
 import 'package:flutter/material.dart';
 
 class ListService {
-
-  static Future<ResponseModel?> finishList(String token, int listId, Map<String, dynamic> purchase) {
+  static Future<ResponseModel?> finishList(
+      String token, int listId, Map<String, dynamic> purchase) {
     final String path = '/api/list/finish/$listId';
 
     try {
       return WebService.post(path, purchase, token).then((response) {
-        if (response.statusCode == 200) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
             "Lista finalizada com sucesso!",
@@ -21,7 +21,7 @@ class ListService {
         } else {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
-            "Falha ao finalizar lista",
+            jsonDecode(response.body)["error"],
             jsonDecode(response.body),
           );
           debugPrint('Failed to finish list: ${response.statusCode}');
@@ -31,7 +31,7 @@ class ListService {
     } catch (e) {
       ResponseModel responseModel = ResponseModel.fromJson(
         500,
-        "Erro de conexão. Tente novamente.",
+        "Erro inesperado. Tente novamente.",
         null,
       );
       debugPrint('Error during list finishing: $e');
@@ -44,7 +44,7 @@ class ListService {
 
     try {
       return WebService.post(path, null, token).then((response) {
-        if (response.statusCode == 200) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
             "Convite aceito com sucesso!",
@@ -55,7 +55,7 @@ class ListService {
         } else {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
-            "Falha ao aceitar convite",
+            jsonDecode(response.body)["error"],
             jsonDecode(response.body),
           );
           debugPrint('Failed to accept invite: ${response.statusCode}');
@@ -78,7 +78,7 @@ class ListService {
 
     try {
       return WebService.post(path, null, token).then((response) {
-        if (response.statusCode == 200) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
             "Convite recusado com sucesso!",
@@ -89,7 +89,7 @@ class ListService {
         } else {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
-            "Falha ao recusar convite",
+            jsonDecode(response.body)["error"],
             jsonDecode(response.body),
           );
           debugPrint('Failed to decline invite: ${response.statusCode}');
@@ -112,7 +112,7 @@ class ListService {
 
     try {
       return WebService.get(path, token).then((response) {
-        if (response.statusCode == 200) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
           List<dynamic> invitesData = jsonDecode(response.body);
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
@@ -124,7 +124,7 @@ class ListService {
         } else {
           ResponseModel responseModel = ResponseModel.fromJson(
             response.statusCode,
-            "Falha ao buscar convites",
+            jsonDecode(response.body)["error"],
             jsonDecode(response.body),
           );
           debugPrint('Failed to fetch invites: ${response.statusCode}');
@@ -148,7 +148,7 @@ class ListService {
     try {
       final response = await WebService.get(path, token);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         List<dynamic> listData = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
@@ -160,7 +160,7 @@ class ListService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao buscar listas",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
         debugPrint('Failed to fetch lists: ${response.statusCode}');
@@ -196,7 +196,7 @@ class ListService {
           },
           token);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
           "Lista atualizada com sucesso!",
@@ -207,7 +207,7 @@ class ListService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao atualizar a lista",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
         debugPrint('Failed to update list: ${response.statusCode}');
@@ -247,8 +247,7 @@ class ListService {
       debugPrint('Response Status: ${response.statusCode}');
       debugPrint('Response Body: ${response.body}');
 
-      if (response.statusCode == 201) {
-        // Check if body is not empty before parsing
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final dynamic data =
             response.body.isNotEmpty ? jsonDecode(response.body) : null;
 
@@ -264,7 +263,7 @@ class ListService {
 
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao criar a lista",
+          jsonDecode(response.body)["error"],
           errorData,
         );
         return responseModel;
@@ -290,7 +289,7 @@ class ListService {
     try {
       final response = await WebService.get(path, token);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         dynamic itemsData = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
@@ -302,7 +301,7 @@ class ListService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao buscar itens",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
         debugPrint('Failed to fetch items: ${response.statusCode}');
@@ -328,7 +327,7 @@ class ListService {
     try {
       final response = await WebService.delete(path, token);
 
-      if (response.statusCode == 204) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
           "Lista deletada com sucesso!",
@@ -339,7 +338,7 @@ class ListService {
       } else {
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao deletar a lista",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
         debugPrint('Failed to delete list: ${response.statusCode}');

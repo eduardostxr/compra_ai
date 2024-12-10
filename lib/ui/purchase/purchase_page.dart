@@ -90,8 +90,13 @@ class PurchaseItemsPage extends StatelessWidget {
                     context.read<AuthManager>().accessToken,
                     listManager.completeList!.id,
                     purchase);
-                if (retorno!.statusCode == 200) {
-                  Navigator.pop(context);
+                if (retorno!.statusCode >= 200 && retorno.statusCode < 300) {
+                  await listManager.getListItems(
+                      context.read<AuthManager>().accessToken,
+                      listManager.completeList!.id);
+                  if (retorno.statusCode >= 200 && retorno.statusCode < 300) {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }
                 }
               },
             ),

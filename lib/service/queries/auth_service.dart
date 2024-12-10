@@ -19,7 +19,7 @@ class AuthService {
       debugPrint('Login response status: ${response.statusCode}');
       debugPrint('Login response body: ${response.body}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return ResponseModel.fromJson(
           response.statusCode,
           "Login bem-sucedido!",
@@ -28,13 +28,13 @@ class AuthService {
       } else {
         return ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao fazer login",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
       }
     } catch (e) {
       debugPrint('Login error: $e');
-      return ResponseModel.fromJson(500, "Erro de conexão", null);
+      return ResponseModel.fromJson(500, "Erro não esperado", null);
     }
   }
 
@@ -55,11 +55,7 @@ class AuthService {
         "pixKey": pixKey,
         "telephone": telephone.trim(),
       });
-
-      // debugPrint('SignUp response status: ${response.statusCode}');
-      // debugPrint('SignUp response body: ${response.body}');
-
-      if (response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return ResponseModel.fromJson(
           response.statusCode,
           "Bem-vindo!",
@@ -68,7 +64,7 @@ class AuthService {
       } else {
         return ResponseModel.fromJson(
           response.statusCode,
-          "Falha ao criar conta",
+          jsonDecode(response.body)["error"],
           jsonDecode(response.body),
         );
       }

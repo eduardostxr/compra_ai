@@ -173,88 +173,98 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 ListProfileGroup(
                   key: listProfileGroupKey,
-                  profiles: context.watch<ListManager>().lists,
+                  profiles: listManager.lists,
                   onProfileTap: (listModel) {
                     listManager.getListItems(
                         context.read<AuthManager>().accessToken, listModel.id);
                   },
                 ),
                 const SizedBox(height: 8),
-                GeneralHomeBtn(
-                  icon: Icons.list_outlined,
-                  label: "Gerenciar Lista",
-                  onPressed: () {
-                    _showBottomSheet(
-                      ListManagerBottomSheet(
-                        onDeleted: () {
-                          listManager.deleteList(
-                            authManager.accessToken,
-                            listManager.completeList!.id,
-                          );
-                          listProfileGroupKey.currentState?.resetSelection();
+                listManager.completeList != null
+                    ? GeneralHomeBtn(
+                        icon: Icons.list_outlined,
+                        label: "Gerenciar Lista",
+                        onPressed: () {
+                          _showBottomSheet(
+                            ListManagerBottomSheet(
+                              onDeleted: () {
+                                listManager.deleteList(
+                                  authManager.accessToken,
+                                  listManager.completeList!.id,
+                                );
+                                listProfileGroupKey.currentState
+                                    ?.resetSelection();
 
-                          context.read<ListManager>().completeList = null;
-                          context.read<ListManager>().lists;
+                                context.read<ListManager>().completeList = null;
+                                context.read<ListManager>().lists;
+                              },
+                              onEdited: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return UpdateListPage(
+                                        list: context
+                                            .read<ListManager>()
+                                            .completeList!,
+                                      );
+                                    },
+                                  ),
+                                ).then(
+                                  (_) {
+                                    if (context.mounted) {
+                                      listManager.getLists(
+                                        context.read<AuthManager>().accessToken,
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                              onInvited: () {},
+                            ),
+                          );
                         },
-                        onEdited: () {
+                      )
+                    : const SizedBox(),
+                const SizedBox(height: 8),
+                listManager.completeList != null
+                    ? GeneralHomeBtn(
+                        icon: Icons.camera_alt_outlined,
+                        label: "Nota Fiscal",
+                        onPressed: _redirectToReceiptPage,
+                      )
+                    : const SizedBox(),
+                const SizedBox(height: 32),
+                listManager.completeList != null
+                    ? GeneralHomeBtn(
+                        icon: Icons.add,
+                        label: "Adicionar Item",
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
-                                return UpdateListPage(
-                                  list:
-                                      context.read<ListManager>().completeList!,
+                                return NewItemPage(
+                                  listId: context
+                                      .read<ListManager>()
+                                      .completeList!
+                                      .id,
                                 );
                               },
                             ),
-                          ).then(
-                            (_) {
-                              if (context.mounted) {
-                                listManager.getLists(
-                                  context.read<AuthManager>().accessToken,
-                                );
-                              }
-                            },
-                          );
+                          ).then((_) {
+                            if (context.mounted) {
+                              final listManager = context.read<ListManager>();
+                              final authManager = context.read<AuthManager>();
+                              listManager.getListItems(
+                                authManager.accessToken,
+                                listManager.completeList!.id,
+                              );
+                            }
+                          });
                         },
-                        onInvited: () {},
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-                GeneralHomeBtn(
-                  icon: Icons.camera_alt_outlined,
-                  label: "Nota Fiscal",
-                  onPressed: _redirectToReceiptPage,
-                ),
-                const SizedBox(height: 32),
-                GeneralHomeBtn(
-                  icon: Icons.add,
-                  label: "Adicionar Item",
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return NewItemPage(
-                            listId:
-                                context.read<ListManager>().completeList!.id,
-                          );
-                        },
-                      ),
-                    ).then((_) {
-                      if (context.mounted) {
-                        final listManager = context.read<ListManager>();
-                        final authManager = context.read<AuthManager>();
-                        listManager.getListItems(
-                          authManager.accessToken,
-                          listManager.completeList!.id,
-                        );
-                      }
-                    });
-                  },
-                ),
+                      )
+                    : const SizedBox(),
                 listManager.completeList != null &&
                         listManager.completeList!.items.isNotEmpty
                     ? ListView.builder(
@@ -342,9 +352,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                       )
-                    : const SizedBox(
+                    : SizedBox(
                         height: 100,
-                        child: Center(child: Text('Sem itens')),
+                        child: Center(
+                            child: Text(listManager.completeList != null
+                                ? 'Nenhum item adicionado'
+                                : 'Escolha uma lista')),
                       ),
                 const SizedBox(
                   height: 32,
