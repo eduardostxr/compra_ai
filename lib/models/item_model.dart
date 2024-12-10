@@ -1,13 +1,15 @@
 class ItemModel {
   final int id;
-  final String createdAt;
-  final String? updatedAt;
-  final String? deletedAt;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final DateTime? deletedAt;
   String? description;
-  double? price;
+  double price;
   String name;
-  double quantity;
+  String quantity;
   bool checked;
+  double unitPrice;
+  String measurementUnit;
 
   ItemModel({
     required this.id,
@@ -16,24 +18,29 @@ class ItemModel {
     this.deletedAt,
     required this.name,
     this.description,
-    this.price,
+    required this.price,
     required this.quantity,
     required this.checked,
+    required this.unitPrice,
+    required this.measurementUnit,
   });
 
-  factory ItemModel.fromJson(Map<String, dynamic> json) {
-    return ItemModel(
-      id: json["id"],
-      createdAt: json["createdAt"] ?? "",
-      updatedAt: json["updatedAt"],  
-      deletedAt: json["deletedAt"],    
-      name: json["name"] ?? "",
-      description: json["description"] ?? "",
-      price: json["price"] != null ? (json["price"] as num).toDouble() : 0.0, 
-      quantity: double.tryParse(json["quantity"].toString()) ?? 0,  
-      checked: json["checked"] ?? false,  
-    );
-  }
+factory ItemModel.fromJson(Map<String, dynamic> json) {
+  return ItemModel(
+    id: json["id"],
+    createdAt: DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] != null ? DateTime.parse(json["updatedAt"]) : null,
+    deletedAt: json["deletedAt"] != null ? DateTime.parse(json["deletedAt"]) : null,
+    name: json["name"] ?? "",
+    description: json["description"],
+    price: json["price"] != null ? (json["price"] as num).toDouble() : 0.0,
+    quantity: json["quantity"]?.toString() ?? "0", // Tratamento para String
+    checked: json["checked"] ?? false,
+    unitPrice: json["unitPrice"] != null ? (json["unitPrice"] as num).toDouble() : 0.0,
+    measurementUnit: json["measurementUnit"] ?? "",
+  );
+}
+
 
   Map<String, dynamic> toJson() {
     final data = {
@@ -42,10 +49,20 @@ class ItemModel {
       "price": price,
       "quantity": quantity,
       "checked": checked,
+      "unitPrice": unitPrice,
+      "measurementUnit": measurementUnit,
     };
 
     if (id != 0) {
       data["id"] = id;
+    }
+
+    data["createdAt"] = createdAt.toIso8601String();
+    if (updatedAt != null) {
+      data["updatedAt"] = updatedAt?.toIso8601String();
+    }
+    if (deletedAt != null) {
+      data["deletedAt"] = deletedAt?.toIso8601String();
     }
 
     return data;

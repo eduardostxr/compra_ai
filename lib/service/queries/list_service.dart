@@ -188,26 +188,41 @@ class ListService {
 
     try {
       final response = await WebService.put(
-          path,
-          {
-            'name': name,
-            'emoji': emoji,
-            'maxSpend': maxSpend,
-          },
-          token);
+        path,
+        {
+          'name': name,
+          'emoji': emoji,
+          'maxSpend': maxSpend,
+        },
+        token,
+      );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        ResponseModel responseModel = ResponseModel.fromJson(
-          response.statusCode,
-          "Lista atualizada com sucesso!",
-          jsonDecode(response.body),
-        );
-        debugPrint('List updated successfully: ${response.statusCode}');
-        return responseModel;
+        String responseBody = response.body;
+        // Verifique se o corpo da resposta não está vazio
+        if (responseBody.isNotEmpty) {
+          ResponseModel responseModel = ResponseModel.fromJson(
+            response.statusCode,
+            "Lista atualizada com sucesso!",
+            jsonDecode(responseBody),
+          );
+          debugPrint('List updated successfully: ${response.statusCode}');
+          return responseModel;
+        } else {
+          // Caso o corpo da resposta seja vazio, retorne um erro de conexão
+          debugPrint('Failed to update list: Response body is empty');
+          return ResponseModel.fromJson(
+            response.statusCode,
+            "Erro de conexão. Tente novamente.",
+            null,
+          );
+        }
       } else {
+        String errorMessage =
+            jsonDecode(response.body)["error"] ?? "Erro desconhecido";
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          jsonDecode(response.body)["error"],
+          errorMessage,
           jsonDecode(response.body),
         );
         debugPrint('Failed to update list: ${response.statusCode}');
@@ -215,13 +230,12 @@ class ListService {
         return responseModel;
       }
     } catch (e) {
-      ResponseModel responseModel = ResponseModel.fromJson(
+      debugPrint('Error during list update: $e');
+      return ResponseModel.fromJson(
         500,
         "Erro de conexão. Tente novamente.",
         null,
       );
-      debugPrint('Error during list update: $e');
-      return responseModel;
     }
   }
 

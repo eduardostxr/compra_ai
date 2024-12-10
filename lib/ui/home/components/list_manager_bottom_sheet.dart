@@ -38,7 +38,7 @@ class ListManagerBottomSheet extends StatelessWidget {
         SheetButton(
           color: AppColors.red,
           onPressed: () => onDeleted(),
-          icon: Icons.exit_to_app_outlined,
+          icon: Icons.delete_outline,
           label: "Deletar lista",
         ),
       ],

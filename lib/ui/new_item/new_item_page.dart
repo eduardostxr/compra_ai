@@ -26,10 +26,10 @@ class _NewItemPageState extends State<NewItemPage> {
 
   void _validateInputs() {
     final String name = nameController.text.trim();
-    final double? quantity = double.tryParse(quantityController.text);
+    // final double? quantity = double.tryParse(quantityController.text);
 
     setState(() {
-      _isButtonEnabled = name.isNotEmpty && quantity != null && quantity > 0;
+      _isButtonEnabled = name.isNotEmpty;
     });
   }
 
@@ -56,7 +56,8 @@ class _NewItemPageState extends State<NewItemPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer3<ItemManager, ListManager, AuthManager>(
-      builder: (context, itemManager, listManager, authManager, child) => Scaffold(
+      builder: (context, itemManager, listManager, authManager, child) =>
+          Scaffold(
         appBar: AppBar(
           title: const Text("Novo Item"),
           foregroundColor: AppColors.offWhite,
@@ -77,18 +78,6 @@ class _NewItemPageState extends State<NewItemPage> {
                 controller: nameController,
               ),
               InputField(
-                hint: "Ex: 5",
-                label: "Quantidade",
-                controller: quantityController,
-                keyboardType: TextInputType.number,
-              ),
-              InputField(
-                hint: "Ex: 50.50",
-                label: "Preço",
-                controller: priceController,
-                keyboardType: TextInputType.number,
-              ),
-              InputField(
                 hint: "Ex: A marca tal",
                 label: "Observação",
                 controller: descriptionController,
@@ -101,16 +90,41 @@ class _NewItemPageState extends State<NewItemPage> {
                     : AppColors.mediumGray,
                 label: "Adicionar",
                 onPressed: _isButtonEnabled
-                    ? () {
-                        itemManager.createItem(
+                    ? () async {
+                        final double? quantity =
+                            quantityController.text.isNotEmpty
+                                ? double.tryParse(quantityController.text)
+                                : 0;
+
+                        final double? price = priceController.text.isNotEmpty
+                            ? double.tryParse(priceController.text)
+                            : 0;
+
+                        if (quantityController.text.isNotEmpty &&
+                            quantity == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Quantidade inválida.')),
+                          );
+                          return;
+                        }
+
+                        final item = await itemManager.createItem(
                           context: context,
                           listId: widget.listId,
                           name: nameController.text,
-                          quantity: double.parse(quantityController.text),
-                          price: double.tryParse(priceController.text),
+                          quantity: quantity,
+                          price: price,
                           description: descriptionController.text,
                         );
-                        Navigator.pop(context);
+
+                        if (item != null) {
+                          listManager.addNewItem(item);
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Falha ao criar o item.')),
+                          );
+                        }
                       }
                     : () {},
               ),

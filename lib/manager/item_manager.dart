@@ -34,11 +34,11 @@ class ItemManager extends ChangeNotifier {
     return response;
   }
 
-  Future<ResponseModel?> createItem({
+  Future<ItemModel?> createItem({
     required BuildContext context,
     required int listId,
     required String name,
-    required double quantity,
+    double? quantity,
     double? price,
     String? description,
   }) async {
@@ -50,8 +50,13 @@ class ItemManager extends ChangeNotifier {
       price: price,
       description: description,
     );
-    print(response);
-    return response;
+
+    if (response != null &&
+        response.statusCode >= 200 &&
+        response.statusCode < 300) {
+      return ItemModel.fromJson(response.value as Map<String, dynamic>);
+    }
+    return null;
   }
 
   Future<ResponseModel?> updateItem({
@@ -61,7 +66,6 @@ class ItemManager extends ChangeNotifier {
     double? price,
     String? description,
     required String token,
-    required ListManager listManager,
   }) async {
     final response = await ItemService.updateItem(
       token: token,
@@ -73,7 +77,10 @@ class ItemManager extends ChangeNotifier {
     );
 
     if (response != null && response.statusCode == 200) {
-      listManager.getListItems(token, listManager.completeList!.id);
+      response.statusCode = 200;
+      response.message = "Item atualizado com sucesso";
+      response.value = ItemModel.fromJson(response.value);
+      return response;
     }
     return response;
   }
