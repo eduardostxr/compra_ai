@@ -47,7 +47,7 @@ class CompleteListModel {
       totalPrice: json['totalPrice'] != null
           ? (json['totalPrice'] as num).toDouble()
           : null,
-      isfinished: json['isfinished'] == true,
+      isfinished: json['isFinished'],
       purchaseDate: json['purchaseDate'] != null
           ? DateTime.parse(json['purchaseDate'])
           : null,
