@@ -10,10 +10,12 @@ class ListProfileGroup extends StatefulWidget {
   const ListProfileGroup({
     super.key,
     required this.onProfileTap,
-    required this.list
+    required this.onAddListTap,
+    required this.list,
   });
 
   final Function(ListModel profile) onProfileTap;
+  final Function() onAddListTap;
   final List<ListModel> list;
 
   @override
@@ -50,7 +52,9 @@ class ListProfileGroupState extends State<ListProfileGroup> {
           height: 100,
           child: Row(
             children: [
-              const AddListButton(),
+              AddListButton(
+                onTap: widget.onAddListTap,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: ListView.separated(

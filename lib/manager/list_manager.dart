@@ -35,6 +35,11 @@ class ListManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeList(int listId) {
+    lists.removeWhere((list) => list.id == listId);
+    notifyListeners();
+  }
+
   void setPurchase(Purchase purchase) {
     this.purchase = purchase;
     notifyListeners();

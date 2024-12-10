@@ -4,7 +4,9 @@ import 'package:compra/ui/new_list/new_list_page.dart';
 import 'package:flutter/material.dart';
 
 class AddListButton extends StatelessWidget {
-  const AddListButton({super.key});
+  const AddListButton({super.key, required this.onTap});
+
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +20,7 @@ class AddListButton extends StatelessWidget {
               color: AppColors.lightPeach,
             ),
             child: InkWell(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NewListPage(),
-                ),
-              ),
+              onTap: () => onTap(),
               splashColor: AppColors.orange.withOpacity(0.2),
               highlightColor: AppColors.orange.withOpacity(0.1),
               borderRadius: BorderRadius.circular(30),

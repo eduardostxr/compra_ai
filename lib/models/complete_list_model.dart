@@ -51,7 +51,9 @@ class CompleteListModel {
       purchaseDate: json['purchaseDate'] != null
           ? DateTime.parse(json['purchaseDate'])
           : null,
-      maxSpend: (json['maxSpend']).toDouble(),
+      maxSpend: json['maxSpend'] != null
+          ? (json['maxSpend'] as num).toDouble()
+          : null,
       ownerId: json['ownerId'],
       userLists: (json['userLists'] as List)
           .map((user) => UserModel.fromJson(user))
