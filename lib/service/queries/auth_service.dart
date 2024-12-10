@@ -14,7 +14,8 @@ class AuthService {
       final response = await WebService.post(path, {
         'email': email.trim(),
         'password': password.trim(),
-      });
+        
+      }, null);
 
       debugPrint('Login response status: ${response.statusCode}');
       debugPrint('Login response body: ${response.body}');
@@ -54,7 +55,7 @@ class AuthService {
         "password": password.trim(),
         "pixKey": pixKey,
         "telephone": telephone.trim(),
-      });
+      }, null);
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return ResponseModel.fromJson(
           response.statusCode,

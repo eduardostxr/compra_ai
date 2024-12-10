@@ -35,10 +35,10 @@ class ListManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLists(List<ListModel> lists) {
-    this.lists = lists;
-    notifyListeners();
-  }
+  // void setLists(List<ListModel> lists) {
+  //   this.lists = lists;
+  //   notifyListeners();
+  // }
 
   void setCompleteList(CompleteListModel completeList) {
     this.completeList = completeList;
@@ -57,6 +57,11 @@ class ListManager extends ChangeNotifier {
       completeList!.items[index] = updatedItem;
       notifyListeners();
     }
+  }
+
+  void setLists(List<ListModel> newLists) {
+    lists = newLists;
+    notifyListeners();
   }
 
   Future<ResponseModel?> finishList(
@@ -125,7 +130,7 @@ class ListManager extends ChangeNotifier {
       List<ListModel> data = (response.value as List)
           .map((item) => ListModel.fromJson(item as Map<String, dynamic>))
           .toList();
-      setLists(data);
+      setLists(data); // Atualiza a lista e notifica a UI
       debugPrint("Lists successfully fetched and updated.");
     } else {
       debugPrint("Failed to fetch lists. Message: ${response?.message}");
@@ -138,8 +143,7 @@ class ListManager extends ChangeNotifier {
     ResponseModel? response =
         await ListService.getListItems(token: token, listId: listId);
     if (response != null && response.statusCode == 200) {
-      CompleteListModel data =
-          CompleteListModel.fromJson(response.value);
+      CompleteListModel data = CompleteListModel.fromJson(response.value);
       setCompleteList(data);
       debugPrint("List items successfully fetched and updated.");
     } else {

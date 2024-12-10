@@ -15,7 +15,10 @@ class ItemDescriptionBottomSheet extends StatelessWidget {
     return CustomBottomSheet(
       title: item.name,
       children: [
-        Text(item.description!),
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Text(item.description!),
+        ),
         const SizedBox(height: 16),
       ],
     );

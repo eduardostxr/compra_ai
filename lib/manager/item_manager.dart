@@ -50,10 +50,8 @@ class ItemManager extends ChangeNotifier {
       price: price,
       description: description,
     );
-    if (response != null && response.statusCode == 201) {
-      return response;
-    }
-      return response;
+    print(response);
+    return response;
   }
 
   Future<ResponseModel?> updateItem({

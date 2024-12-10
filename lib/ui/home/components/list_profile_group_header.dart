@@ -27,7 +27,7 @@ class _ListProfileGroupHeaderState extends State<ListProfileGroupHeader> {
         widget.text,
         style: const TextStyle(
           color: AppColors.darkGray,
-          fontSize: 14,
+          fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
         textAlign: TextAlign.start,

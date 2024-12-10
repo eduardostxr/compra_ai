@@ -6,7 +6,7 @@ class ItemModel {
   String? description;
   double? price;
   String name;
-  int quantity;
+  double quantity;
   bool checked;
 
   ItemModel({
@@ -30,7 +30,7 @@ class ItemModel {
       name: json["name"] ?? "",
       description: json["description"] ?? "",
       price: json["price"] != null ? (json["price"] as num).toDouble() : 0.0, 
-      quantity: int.tryParse(json["quantity"].toString()) ?? 0,  
+      quantity: double.tryParse(json["quantity"].toString()) ?? 0,  
       checked: json["checked"] ?? false,  
     );
   }

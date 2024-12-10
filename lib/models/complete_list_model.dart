@@ -8,6 +8,8 @@ class CompleteListModel {
   DateTime? deletedAt;
   String name;
   String emoji;
+  bool isfinished;
+  DateTime? purchaseDate;
   double? totalPrice;
   double maxSpend;
   int ownerId;
@@ -23,6 +25,8 @@ class CompleteListModel {
     required this.name,
     required this.emoji,
     this.totalPrice,
+    this.purchaseDate,
+    required this.isfinished,
     required this.maxSpend,
     required this.ownerId,
     required this.userLists,
@@ -42,6 +46,10 @@ class CompleteListModel {
       emoji: json['emoji'],
       totalPrice: json['totalPrice'] != null
           ? (json['totalPrice'] as num).toDouble()
+          : null,
+      isfinished: json['isfinished'] == true,
+      purchaseDate: json['purchaseDate'] != null
+          ? DateTime.parse(json['purchaseDate'])
           : null,
       maxSpend: (json['maxSpend'] as num).toDouble(),
       ownerId: json['ownerId'],

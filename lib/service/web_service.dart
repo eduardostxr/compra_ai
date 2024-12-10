@@ -33,8 +33,8 @@ class WebService {
     }
   }
 
-  static Future<http.Response> post(String path, dynamic body,
-      [String? token]) async {
+  static Future<http.Response> post(
+      String path, dynamic body, String? token) async {
     try {
       final uri = _buildUri(path);
       final headers = {
@@ -86,36 +86,35 @@ class WebService {
     }
   }
 
-static Future<http.Response> patch(String path, Map<String, dynamic>? body,
-    [String? token]) async {
-  try {
-    final uri = _buildUri(path);
-    final headers = {
-      "Content-Type": "application/json",
-      if (token != null) "Authorization": "Bearer $token",
-    };
+  static Future<http.Response> patch(String path, Map<String, dynamic>? body,
+      [String? token]) async {
+    try {
+      final uri = _buildUri(path);
+      final headers = {
+        "Content-Type": "application/json",
+        if (token != null) "Authorization": "Bearer $token",
+      };
 
-    debugPrint("PATCH Request to: $uri");
-    debugPrint("Headers: $headers");
-    
-    if (body != null) {
-      debugPrint("Body: ${jsonEncode(body)}");
-    } else {
-      debugPrint("Body: null (não será enviado)");
+      debugPrint("PATCH Request to: $uri");
+      debugPrint("Headers: $headers");
+
+      if (body != null) {
+        debugPrint("Body: ${jsonEncode(body)}");
+      } else {
+        debugPrint("Body: null (não será enviado)");
+      }
+      final response = await client.patch(
+        uri,
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      );
+
+      return response;
+    } catch (e) {
+      debugPrint("Failed to PATCH $path: $e");
+      rethrow;
     }
-    final response = await client.patch(
-      uri,
-      headers: headers,
-      body: body != null ? jsonEncode(body) : null,
-    );
-
-    return response;
-  } catch (e) {
-    debugPrint("Failed to PATCH $path: $e");
-    rethrow;
   }
-}
-
 
   static Future<http.Response> delete(String path, [String? token]) async {
     try {

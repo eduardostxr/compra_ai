@@ -173,7 +173,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 ListProfileGroup(
                   key: listProfileGroupKey,
-                  profiles: listManager.lists,
                   onProfileTap: (listModel) {
                     listManager.getListItems(
                         context.read<AuthManager>().accessToken, listModel.id);
@@ -353,11 +352,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       )
                     : SizedBox(
-                        height: 100,
-                        child: Center(
-                            child: Text(listManager.completeList != null
-                                ? 'Nenhum item adicionado'
-                                : 'Escolha uma lista')),
+                        height: 200,
+                        child: listManager.lists.isNotEmpty
+                            ? Center(
+                                child: Text(
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        color: AppColors.darkGray),
+                                    listManager.completeList != null
+                                        ? 'Adicione seu primeiro item!'
+                                        : 'Escolha uma lista!'))
+                            : const Center(
+                                child: Text(
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: AppColors.darkGray),
+                                    'Crie a sua primeira lista!'),
+                              ),
                       ),
                 const SizedBox(
                   height: 32,

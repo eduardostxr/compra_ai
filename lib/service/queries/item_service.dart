@@ -54,7 +54,9 @@ class ItemService {
     final Map<String, dynamic> data = {
       "name": name,
       "quantity": quantity,
+      if (price != null)
       "price": price,
+      if (description != null)
       "description": description,
     };
 
@@ -62,18 +64,35 @@ class ItemService {
       final response = await WebService.post(path, data, token);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        // Verifique o tipo de resposta
+        var responseBody = jsonDecode(response.body);
+
+        // Se a resposta for uma lista, converta-a corretamente para o formato esperado
+        if (responseBody is List) {
+          // Aqui você pode tratar a lista conforme necessário, por exemplo:
+          return ResponseModel.fromJson(
+            response.statusCode,
+            "Item criado com sucesso!",
+            responseBody, // Aqui passamos a lista diretamente
+          );
+        }
+
+        // Caso a resposta não seja uma lista, trate como um objeto
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
           "Item criado com sucesso!",
-          jsonDecode(response.body),
+          responseBody, // A resposta pode ser um objeto e não uma lista
         );
+
         debugPrint('Item created successfully: ${response.statusCode}');
         return responseModel;
       } else {
+        var responseBody = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(
           response.statusCode,
-          jsonDecode(response.body)["error"],
-          jsonDecode(response.body),
+          responseBody[
+              "error"], // A mensagem de erro provavelmente está em "error"
+          responseBody,
         );
         debugPrint(
             'Failed to create item: ${responseModel.statusCode} - ${responseModel.message}');

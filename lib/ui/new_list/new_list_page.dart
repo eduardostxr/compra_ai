@@ -63,13 +63,15 @@ class _NewListPageState extends State<NewListPage> {
               DefaultButton(
                 color: AppColors.darkGreen,
                 label: "Criar Lista",
-                onPressed: () {
+                onPressed: () async {
                   listManager.createList(
                     authManager.accessToken,
                     nameController.text,
                     emojiFieldKey.currentState?.selectedEmoji ?? '',
                     double.tryParse(maxSpendController.text),
                   );
+                  await listManager.getLists(authManager.accessToken);
+                  Navigator.pop(context);
                 },
               ),
             ],
