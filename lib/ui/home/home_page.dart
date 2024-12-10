@@ -1,4 +1,5 @@
 import 'package:compra/manager/auth_manager.dart';
+import 'package:compra/manager/invite_manager.dart';
 import 'package:compra/manager/item_manager.dart';
 import 'package:compra/manager/list_manager.dart';
 import 'package:compra/models/complete_list_model.dart';
@@ -10,6 +11,7 @@ import 'package:compra/ui/home/components/list_item.dart';
 import 'package:compra/ui/home/components/list_manager_bottom_sheet.dart';
 import 'package:compra/ui/home/components/list_profile_group.dart';
 import 'package:compra/ui/home/components/list_summary.dart';
+import 'package:compra/ui/invite/invite_page.dart';
 import 'package:compra/ui/new_item/new_item_page.dart';
 import 'package:compra/ui/new_list/new_list_page.dart';
 import 'package:compra/ui/receipt/receipt_page.dart';
@@ -50,66 +52,77 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _showInvites() {
-    final listManager = context.read<ListManager>();
+void _showInvites() {
+  final listManager = context.read<ListManager>(); // Obtém sem escutar mudanças
+  final inviteManager = context.read<InviteManager>(); // Obtém sem escutar mudanças
+  final authManager = context.read<AuthManager>(); // Também sem escutar mudanças
 
-    _showBottomSheet(
-      listManager.invites.isEmpty
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  "Você não tem convites pendentes.",
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
+  _showBottomSheet(
+    listManager.invites.isEmpty
+        ? const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "Você não tem convites pendentes.",
+                style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
-            )
-          : ListView.builder(
-              shrinkWrap: true,
-              itemCount: listManager.invites.length,
-              itemBuilder: (context, index) {
-                final invite = listManager.invites[index];
-                return ListTile(
-                  title: Text(invite.list.name),
-                  subtitle: Text("Convidado por: ${invite.invitedBy.name}"),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.check, color: Colors.green),
-                        onPressed: () {
-                          listManager
-                              .acceptInvite(
-                            context.read<AuthManager>().accessToken,
-                            invite.id,
-                          )
-                              .then((_) {
-                            _fetchInvites();
-                            Navigator.pop(context);
-                          });
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        onPressed: () {
-                          listManager
-                              .declineInvite(
-                            context.read<AuthManager>().accessToken,
-                            invite.id,
-                          )
-                              .then((_) {
-                            _fetchInvites();
-                            Navigator.pop(context);
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
             ),
-    );
-  }
+          )
+        : ListView.builder(
+            shrinkWrap: true,
+            itemCount: listManager.invites.length,
+            itemBuilder: (context, index) {
+              final invite = listManager.invites[index];
+              return ListTile(
+                title: Text(invite.list.name),
+                subtitle: Text("Convidado por: ${invite.invitedBy.name}"),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () async {
+                        // Aceitar convite
+                        await inviteManager.acceptInvite(
+                          context,
+                          invite.id,
+                          true,
+                        );
+
+                        // Atualizar informações da lista
+                        await listManager.updateListInfo(context);
+
+                        // Obter e configurar listas
+                        await listManager.getLists(authManager.accessToken);
+                        listManager.setLists(listManager.lists);
+
+                        // Atualizar convites e fechar o modal
+                        _fetchInvites();
+                        if (mounted) Navigator.pop(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.red),
+                      onPressed: () async {
+                        // Recusar convite
+                        await inviteManager.acceptInvite(
+                          context,
+                          invite.id,
+                          false,
+                        );
+
+                        _fetchInvites();
+                        if (mounted) Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+  );
+}
+
 
   void _showBottomSheet(Widget bottomSheetWidget) {
     showModalBottomSheet(
@@ -195,7 +208,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       }
                     }),
-                    list: listManager.lists,
                     onProfileTap: (listModel) {
                       listManager.getListItems(
                           context.read<AuthManager>().accessToken,
@@ -324,7 +336,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   }
                 }),
-                list: listManager.lists,
                 onProfileTap: (listModel) {
                   listManager.getListItems(
                       context.read<AuthManager>().accessToken, listModel.id);
@@ -382,7 +393,33 @@ class _MyHomePageState extends State<MyHomePage> {
                                         },
                                       );
                                     },
-                                    onInvited: () {},
+                                    onInvited: () {
+                                      final listId =
+                                          listManager.completeList!.id;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              InvitePage(listId: listId),
+                                        ),
+                                      ).then((_) {
+                                        if (context.mounted) {
+                                          listManager.getLists(
+                                            context
+                                                .read<AuthManager>()
+                                                .accessToken,
+                                          );
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Convite enviado."),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        }
+                                      });
+                                    },
                                   ),
                                 );
                               },

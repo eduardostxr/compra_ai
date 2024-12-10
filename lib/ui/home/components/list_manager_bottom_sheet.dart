@@ -30,7 +30,7 @@ class ListManagerBottomSheet extends StatelessWidget {
           color: AppColors.darkGray,
           onPressed: () => onInvited(),
           icon: Icons.person_add_outlined,
-          label: "Convidar amigos",
+          label: "Convidar amigo",
         ),
         const Divider(
           height: 32,

@@ -11,12 +11,10 @@ class ListProfileGroup extends StatefulWidget {
     super.key,
     required this.onProfileTap,
     required this.onAddListTap,
-    required this.list,
   });
 
   final Function(ListModel profile) onProfileTap;
   final Function() onAddListTap;
-  final List<ListModel> list;
 
   @override
   State<ListProfileGroup> createState() => ListProfileGroupState();
@@ -43,7 +41,7 @@ class ListProfileGroupState extends State<ListProfileGroup> {
   Widget build(BuildContext context) {
     return Consumer<ListManager>(
       builder: (context, listManager, child) {
-        final profiles = widget.list;
+        final profiles = listManager.lists; // Obtém a lista atualizada diretamente do ListManager
         return Container(
           padding: const EdgeInsets.only(left: 16),
           decoration: const BoxDecoration(

@@ -103,7 +103,7 @@ class _NewItemPageState extends State<NewItemPage> {
                         if (quantityController.text.isNotEmpty &&
                             quantity == 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Quantidade inválida.')),
+                            SnackBar(content: Text('Quantidade inválida.')),
                           );
                           return;
                         }
@@ -122,7 +122,7 @@ class _NewItemPageState extends State<NewItemPage> {
                           Navigator.pop(context);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Falha ao criar o item.')),
+                            SnackBar(content: Text('Falha ao criar o item.')),
                           );
                         }
                       }

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/models/complete_list_model.dart';
 import 'package:compra/models/invite_model.dart';
 import 'package:compra/models/item_model.dart';
@@ -7,6 +8,7 @@ import 'package:compra/models/list_model.dart';
 import 'package:compra/models/purchase.dart';
 import 'package:compra/service/queries/list_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/response_model.dart';
 
 class ListManager extends ChangeNotifier {
@@ -34,6 +36,17 @@ class ListManager extends ChangeNotifier {
     if (index != -1) {
       completeList!.items[index] = item;
       notifyListeners();
+    }
+  }
+
+  Future<void> updateListInfo(BuildContext context) async {
+    final token = Provider.of<AuthManager>(context, listen: false).accessToken;
+    final response = await getLists(token);
+    if (response != null && response.statusCode == 200) {
+      List<ListModel> data = (response.value as List)
+          .map((item) => ListModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+      setLists(data);
     }
   }
 
@@ -266,18 +279,6 @@ class ListManager extends ChangeNotifier {
       getLists(token);
     } else {
       debugPrint("Failed to accept invite. Message: ${response?.message}");
-    }
-
-    return response;
-  }
-
-  Future<ResponseModel?> declineInvite(String token, int inviteId) async {
-    ResponseModel? response = await ListService.declineInvite(token, inviteId);
-
-    if (response != null && response.statusCode == 204) {
-      debugPrint("Invite successfully declined.");
-    } else {
-      debugPrint("Failed to decline invite. Message: ${response?.message}");
     }
 
     return response;
