@@ -44,7 +44,7 @@ class _PasswordFieldState extends State<PasswordField> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 hintText: widget.hint,
-                hintStyle: const TextStyle(color: AppColors.mediumGray),
+                hintStyle: const TextStyle(color: AppColors.gray),
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: AppColors.darkGreen, width: 2),
                   borderRadius: BorderRadius.all(Radius.circular(8)),

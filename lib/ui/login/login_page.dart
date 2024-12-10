@@ -104,6 +104,7 @@ class LoginPageState extends State<LoginPage> {
             const SocialBtn(
                 text: "Entrar com o Google",
                 path: "lib/assets/images/google_icon.png"),
+            const SizedBox(height: 24),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:compra/manager/auth_manager.dart';
 import 'package:compra/manager/item_manager.dart';
 import 'package:compra/manager/list_manager.dart';
+import 'package:compra/models/response_model.dart';
 import 'package:compra/ui/home/components/account_bottom_sheet.dart';
 import 'package:compra/ui/home/components/general_home_btn.dart';
 import 'package:compra/ui/home/components/item_bottom_sheet.dart';
@@ -173,6 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 ListProfileGroup(
                   key: listProfileGroupKey,
+                  list: listManager.lists,
                   onProfileTap: (listModel) {
                     listManager.getListItems(
                         context.read<AuthManager>().accessToken, listModel.id);
@@ -293,27 +295,36 @@ class _MyHomePageState extends State<MyHomePage> {
                                     .completeList!
                                     .items[index]
                                     .name,
-                                onDeleted: () {
-                                  itemManager
-                                      .deleteItem(
+                                onDeleted: () async {
+                                  ResponseModel? response =
+                                      await itemManager.deleteItem(
                                     itemId: context
                                         .read<ListManager>()
                                         .completeList!
                                         .items[index]
                                         .id,
                                     token: authManager.accessToken,
-                                  )
-                                      .then((_) {
-                                    if (context.mounted) {
-                                      final listManager =
-                                          context.read<ListManager>();
-                                      listManager.getListItems(
-                                        authManager.accessToken,
-                                        listManager.completeList!.id,
-                                      );
-                                      Navigator.pop(context);
-                                    }
-                                  });
+                                  );
+
+                                  if (response != null &&
+                                      response.statusCode == 200) {
+                                    listManager.removeFromList(
+                                      context
+                                          .read<ListManager>()
+                                          .completeList!
+                                          .items[index],
+                                    );
+                                  }
+
+                                  if (context.mounted) {
+                                    final listManager =
+                                        context.read<ListManager>();
+                                    listManager.getListItems(
+                                      authManager.accessToken,
+                                      listManager.completeList!.id,
+                                    );
+                                    Navigator.pop(context);
+                                  }
                                 },
                                 onEdited: () {
                                   Navigator.push(

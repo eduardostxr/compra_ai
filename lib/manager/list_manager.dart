@@ -30,6 +30,11 @@ class ListManager extends ChangeNotifier {
     }
   }
 
+  void removeFromList(ItemModel item) {
+    completeList!.items.remove(item);
+    notifyListeners();
+  }
+
   void setPurchase(Purchase purchase) {
     this.purchase = purchase;
     notifyListeners();
