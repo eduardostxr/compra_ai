@@ -52,77 +52,70 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-void _showInvites() {
-  final listManager = context.read<ListManager>(); // Obtém sem escutar mudanças
-  final inviteManager = context.read<InviteManager>(); // Obtém sem escutar mudanças
-  final authManager = context.read<AuthManager>(); // Também sem escutar mudanças
+  void _showInvites() {
+    final listManager =
+        context.read<ListManager>(); // Obtém sem escutar mudanças
+    final inviteManager =
+        context.read<InviteManager>(); // Obtém sem escutar mudanças
+    final authManager =
+        context.read<AuthManager>(); // Também sem escutar mudanças
 
-  _showBottomSheet(
-    listManager.invites.isEmpty
-        ? const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                "Você não tem convites pendentes.",
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-              ),
-            ),
-          )
-        : ListView.builder(
-            shrinkWrap: true,
-            itemCount: listManager.invites.length,
-            itemBuilder: (context, index) {
-              final invite = listManager.invites[index];
-              return ListTile(
-                title: Text(invite.list.name),
-                subtitle: Text("Convidado por: ${invite.invitedBy.name}"),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () async {
-                        // Aceitar convite
-                        await inviteManager.acceptInvite(
-                          context,
-                          invite.id,
-                          true,
-                        );
-
-                        // Atualizar informações da lista
-                        await listManager.updateListInfo(context);
-
-                        // Obter e configurar listas
-                        await listManager.getLists(authManager.accessToken);
-                        listManager.setLists(listManager.lists);
-
-                        // Atualizar convites e fechar o modal
-                        _fetchInvites();
-                        if (mounted) Navigator.pop(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.red),
-                      onPressed: () async {
-                        // Recusar convite
-                        await inviteManager.acceptInvite(
-                          context,
-                          invite.id,
-                          false,
-                        );
-
-                        _fetchInvites();
-                        if (mounted) Navigator.pop(context);
-                      },
-                    ),
-                  ],
+    _showBottomSheet(
+      listManager.invites.isEmpty
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Você não tem convites pendentes.",
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
-              );
-            },
-          ),
-  );
-}
-
+              ),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: listManager.invites.length,
+              itemBuilder: (context, index) {
+                final invite = listManager.invites[index];
+                return ListTile(
+                  title: Text(invite.list.name),
+                  subtitle: Text("Convidado por: ${invite.invitedBy.name}"),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        onPressed: () async {
+                          await inviteManager.acceptInvite(
+                            context,
+                            invite.id,
+                            true,
+                          );
+                          await listManager.updateListInfo(context);
+                          await listManager.getLists(authManager.accessToken);
+                          listManager.setLists(listManager.lists);
+                          _fetchInvites();
+                          if (mounted) Navigator.pop(context);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed: () async {
+                          await inviteManager.acceptInvite(
+                            context,
+                            invite.id,
+                            false,
+                          );
+                          _fetchInvites();
+                          if (mounted) Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+    );
+  }
 
   void _showBottomSheet(Widget bottomSheetWidget) {
     showModalBottomSheet(

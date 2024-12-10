@@ -27,31 +27,39 @@ class PurchaseItemsPage extends StatelessWidget {
             content: const Text(
                 'Você tem certeza que deseja finalizar a lista? Após essa ação, a lista não poderá mais ser editada.'),
             actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Fechar o diálogo
-                },
-                child: const Text('Cancelar'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  // Realiza a finalização da lista
-                  ResponseModel? retorno = await listManager.finishList(
-                    context.read<AuthManager>().accessToken,
-                    listManager.completeList!.id,
-                    listManager.purchase!,
-                  );
-                  if (retorno!.statusCode >= 200 && retorno.statusCode < 300) {
-                    await listManager.getListItems(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Fechar o diálogo
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                  const SizedBox(width: 32),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Realiza a finalização da lista
+                      ResponseModel? retorno = await listManager.finishList(
                         context.read<AuthManager>().accessToken,
-                        listManager.completeList!.id);
-                    if (retorno.statusCode >= 200 && retorno.statusCode < 300) {
-                      Navigator.popUntil(context, (route) => route.isFirst);
-                    }
-                  }
-                },
-                child: const Text('Confirmar'),
-              ),
+                        listManager.completeList!.id,
+                        listManager.purchase!,
+                      );
+                      if (retorno!.statusCode >= 200 &&
+                          retorno.statusCode < 300) {
+                        await listManager.getListItems(
+                            context.read<AuthManager>().accessToken,
+                            listManager.completeList!.id);
+                        if (retorno.statusCode >= 200 &&
+                            retorno.statusCode < 300) {
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                        }
+                      }
+                    },
+                    child: const Text('Confirmar'),
+                  ),
+                ],
+              )
             ],
           );
         },
@@ -67,22 +75,26 @@ class PurchaseItemsPage extends StatelessWidget {
             content: const Text(
                 'Você tem certeza que deseja cancelar? Todas as alterações serão perdidas.'),
             actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
-                },
-                child: const Text('Não'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyHomePage()),
-                    (Route<dynamic> route) => false,
-                  );
-                },
-                child: const Text('Sim, Cancelar'),
-              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Fecha o diálogo
+                  },
+                  child: const Text('Não'),
+                ),
+                const SizedBox(width: 32),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyHomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: const Text('Sim, Cancelar'),
+                ),
+              ])
             ],
           );
         },
@@ -324,33 +336,41 @@ class PurchaseItemsPage extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final name = nameController.text;
-                final price = double.tryParse(priceController.text) ?? 0.0;
-                final quantity = double.tryParse(quantityController.text) ?? 0;
-                final unit = unitController.text;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                const SizedBox(width: 32),
+                ElevatedButton(
+                  onPressed: () {
+                    final name = nameController.text;
+                    final price = double.tryParse(priceController.text) ?? 0.0;
+                    final quantity =
+                        double.tryParse(quantityController.text) ?? 0;
+                    final unit = unitController.text;
 
-                listManager.addPurchaseProduct(
-                  Product(
-                    name: name,
-                    quantity: quantity,
-                    unitPrice: price,
-                    price: double.parse((price * quantity).toStringAsFixed(2)),
-                    measurementUnit: unit,
-                  ),
-                );
+                    listManager.addPurchaseProduct(
+                      Product(
+                        name: name,
+                        quantity: quantity,
+                        unitPrice: price,
+                        price:
+                            double.parse((price * quantity).toStringAsFixed(2)),
+                        measurementUnit: unit,
+                      ),
+                    );
 
-                Navigator.of(context).pop();
-              },
-              child: const Text('Adicionar'),
-            ),
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Adicionar'),
+                ),
+              ],
+            )
           ],
         );
       },
