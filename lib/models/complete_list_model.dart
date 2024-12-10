@@ -11,7 +11,7 @@ class CompleteListModel {
   bool isfinished;
   DateTime? purchaseDate;
   double? totalPrice;
-  double maxSpend;
+  double? maxSpend;
   int ownerId;
   List<UserModel> userLists;
   List<ItemModel> items;
@@ -27,7 +27,7 @@ class CompleteListModel {
     this.totalPrice,
     this.purchaseDate,
     required this.isfinished,
-    required this.maxSpend,
+    this.maxSpend,
     required this.ownerId,
     required this.userLists,
     required this.items,
@@ -51,7 +51,9 @@ class CompleteListModel {
       purchaseDate: json['purchaseDate'] != null
           ? DateTime.parse(json['purchaseDate'])
           : null,
-      maxSpend: (json['maxSpend'] as num).toDouble(),
+      maxSpend: json['maxSpend'] != null
+          ? (json['maxSpend'] as num).toDouble()
+          : null,
       ownerId: json['ownerId'],
       userLists: (json['userLists'] as List)
           .map((user) => UserModel.fromJson(user))
